@@ -7,6 +7,7 @@
 #
 #   python cartao.py E:\            so' mostra o que faria
 #   python cartao.py E:\ --fazer    faz
+#   python cartao.py E:\ --so-indices --fazer   so' os indices (de todas as pastas), sem mexer nos nomes
 #
 # Pastas de jogos = as pastas da raiz do cartao, menos BIN, SYS, _NAV, FAVORITOS e as do
 # sistema. Para escolher outras:  --pastas GAMES DEMOS
@@ -48,7 +49,9 @@ def corre(script, *args):
 #   DEMOS               nome da pasta (procura no cartao a menos funda com esse nome)
 #   PT3 = MUSICA/PT3    rotulo (ate' 6 letras) = caminho dentro do cartao
 #   [opcoes]
-#   jogos = GAMES DEMOS pastas de jogos (o mesmo que --pastas)
+#   jogos = GAMES DEMOS pastas de jogos (o mesmo que --pastas): arruma-as, mete a maquina no nome e indexa-as
+#                       ("jogos =" vazio: nenhuma; sem a linha: todas as da raiz menos as do sistema e FAVORITOS)
+#   indexar = FAVORITOS MUSICA   pastas que so' indexa, sem mexer nos nomes ("tudo" = todas as do cartao)
 #   normal = no         yes = nomes de 17 letras (navegador de 32 colunas)
 import configparser
 CFG = configparser.ConfigParser(allow_no_value=True, delimiters=('=',), comment_prefixes=('#', ';'))
@@ -66,31 +69,46 @@ def main():
     ap.add_argument('--pastas', nargs='*', help='pastas de jogos (dentro do cartao)')
     ap.add_argument('--pasta', nargs='+', action='extend', default=[], help='pastas da barra de baixo do navegador')
     ap.add_argument('--normal', action='store_true', help='nomes de 17 letras (navegador de 32 colunas)')
+    ap.add_argument('--so-indices', action='store_true', help="so' os indices do cartao todo, sem arrumar nem mudar nomes")
+    ap.add_argument('--indexar', nargs='*', help="pastas que so' se indexam, sem mexer nos nomes (o mesmo que indexar = no config.ini)")
     a = ap.parse_args()
     if not os.path.isdir(a.cartao): sys.exit('nao existe: %s' % a.cartao)
     le_config()
+    jogos_cfg = False
     if not a.pastas and CFG.has_option('opcoes', 'jogos'):
-        a.pastas = CFG.get('opcoes', 'jogos').split()
+        a.pastas = CFG.get('opcoes', 'jogos').split(); jogos_cfg = True   # "jogos =" vazio = nenhuma
+    if a.indexar is None and CFG.has_option('opcoes', 'indexar'):
+        a.indexar = CFG.get('opcoes', 'indexar').split()
     if not a.normal and CFG.has_option('opcoes', 'normal'):
         a.normal = CFG.getboolean('opcoes', 'normal')
     if a.pastas:
         pastas = [os.path.join(a.cartao, p) for p in a.pastas]
+    elif jogos_cfg:
+        pastas = []
     else:
         pastas = [os.path.join(a.cartao, d) for d in sorted(os.listdir(a.cartao))
                   if os.path.isdir(os.path.join(a.cartao, d)) and d.upper() not in FORA and not d.startswith('.')]
     pastas = [p for p in pastas if os.path.isdir(p)]
-    if not pastas: sys.exit('nao encontrei pastas de jogos em %s' % a.cartao)
-    print('pastas de jogos:', ', '.join(os.path.basename(p) for p in pastas), flush=True)
     f = ['--fazer'] if a.fazer else []
-    for p in pastas: corre('maquina.py', p, *f)
-    corre('arruma.py', *pastas, '--por-titulo', *f)
+    if a.so_indices:
+        pastas = []; a.pastas = []; a.indexar = ['tudo']   # o gera_nav passa pelo cartao todo
+        print('so\' os indices (sem arrumar nem mudar nomes)')
+    elif not pastas and a.indexar:
+        print('sem pastas de jogos; so\' indices em: %s' % ' '.join(a.indexar))
+    else:
+        if not pastas: sys.exit('nao encontrei pastas de jogos em %s (ou usa --so-indices / indexar = ...)' % a.cartao)
+        print('pastas de jogos:', ', '.join(os.path.basename(p) for p in pastas), flush=True)
+        for p in pastas: corre('maquina.py', p, *f)
+        corre('arruma.py', *pastas, '--por-titulo', *f)
     if a.fazer:
         if not a.pasta and CFG.has_section('pastas'):   # sem --pasta: o config.ini
             for k, v in CFG.items('pastas'):
                 a.pasta.append('%s=%s' % (v, k) if v else k)     # ROTULO = CAMINHO, ou so' NOME
             print('pastas da barra (config.ini): %s' % ' '.join(a.pasta))
         extra = (['--pasta'] + a.pasta if a.pasta else []) + (['--largura', '17'] if a.normal else [])
-        if a.pastas: extra += ['--so'] + [os.path.relpath(p, a.cartao) for p in pastas]   # so' as pastas do "jogos"
+        so = [os.path.relpath(p, a.cartao) for p in pastas] + [x for x in (a.indexar or []) if x.lower() != 'tudo']
+        if so and not any(x.lower() == 'tudo' for x in (a.indexar or [])):
+            extra += ['--so'] + so                  # so' as pastas do "jogos" e do "indexar" (e a raiz)
         corre('gera_nav.py', a.cartao, '--fazer', *extra)
         print('\nFeito. Agora "Ejetar" antes de tirar o cartao.')
     else:

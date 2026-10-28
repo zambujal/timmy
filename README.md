@@ -207,9 +207,14 @@ jogo, o nome 8.3 e a máquina; com eles o navegador mostra os nomes inteiros, a 
 `cartao.py` arruma a colecção: separa por letra e título e mete a máquina no nome dos ficheiros.
 Precisa só de Python 3.
 
-1. No `ferramentas/config.ini`, em `jogos = ...`, põe os nomes das pastas da raiz do cartão que ele
-   deve tratar (separadas por espaços); em `[pastas]` as que aparecem na barra de baixo do navegador.
-   Sem `jogos`, trata todas as pastas da raiz menos as do sistema.
+1. No `ferramentas/config.ini` dizes o que ele faz a cada pasta (nomes separados por espaços):
+   - `jogos = JOGOS DEMOS` — pastas de jogos: arruma-as, mete a máquina no nome e indexa-as
+     (`jogos =` vazio: nenhuma; sem a linha: todas as da raiz menos as do sistema e `FAVORITOS`);
+   - `indexar = FAVORITOS MUSICA` — pastas que só indexa, sem mexer nos nomes nem na ordem
+     (`tudo` = o cartão inteiro);
+   - em `[pastas]`, as que aparecem na barra de baixo do navegador (`FAVORI = FAVORITOS`).
+   O mesmo dá-se no comando, com `--pastas`, `--indexar` e `--pasta`, que ganham ao `config.ini`;
+   `--so-indices` faz só os índices do cartão todo.
 2. Com o cartão no PC, primeiro só a ver o que faria:
    - Linux: `python3 ferramentas/cartao.py /run/media/$USER/NOME_DO_CARTAO`
    - Windows: `python ferramentas\cartao.py E:\` (a letra do cartão)
