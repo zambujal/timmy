@@ -7,8 +7,10 @@ BIN/BPLUGINS/MOD (+ CFG/MOD.CFG, MOD.INI)   plugin: toca .MOD no General Sound
 SYS/NAV.SOM      a musica de arranque (PT3) que o SOMNAV toca
 SYS/ROMS/        metes aqui TC2048.ROM (16384 bytes) e ESXMMC.BIN (8192 bytes, do pacote do esxDOS)
 
-Opcional:
+Opcional (com direitos, nao estao aqui):
+BIN/128.rom      ROM do ZX Spectrum 128 (32K = ROM 0 + ROM 1): modo 128K e Pentagon
 BIN/2068.rom     para o modo TC2068: 24K = ROM home do TC2068 (16K) + EXROM (8K); com mais 8K de esxDOS
                  do 2068 (32K) tambem ha' esxDOS nesse modo (ver docs/)
+BIN/GS105B.ROM   firmware do General Sound 1.05b (32K; fontes em github.com/psbhlw/gs-firmware)
 BIN/PLUG2068/TAP plugin TAP para o TC2068, feito do plugin TAP do esxDOS: fontes/plug2068/faz_plug2068.py
 _NAV/            indices feitos pelo ferramentas/cartao.py (opcional; sem eles o NAV le a pasta directamente)
