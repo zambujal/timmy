@@ -40,8 +40,8 @@ o esxDOS, que cada um mete lá (ver "O cartão").
 5. Opcional, só para as outras máquinas e placas (também têm direitos, não estão aqui):
    - `BIN/128.rom` — a ROM do ZX Spectrum 128 (32768 bytes: ROM 0 + ROM 1), para o modo 128K e o
      Pentagon;
-   - `BIN/2068.rom` — a do Timex TC2068 (24576 bytes: ROM home de 16K + EXROM de 8K), para o modo
-     TC2068;
+   - `BIN/2068.rom` — a do Timex TC2068 para o modo TC2068: ROM home de 16K + EXROM de 8K (24576
+     bytes), ou com mais os 8K do esxDOS do 2068 a seguir (32768 bytes), que dá esxDOS nesse modo;
    - `BIN/GS105B.ROM` — o firmware do General Sound, versão 1.05b (32768 bytes), para o GS; as fontes
      estão em github.com/psbhlw/gs-firmware;
    - `BIN/PLUG2068/TAP` — plugin TAP para o TC2068, feito a partir do plugin TAP do esxDOS com
