@@ -115,7 +115,8 @@ Com o Gowin EDA (1.9.11 ou mais recente; a versão Education chega), na pasta `c
 gw_sh timmy.tcl
 ```
 
-O resultado fica em `core/impl/pnr/*.fs`. Não precisa de ROM nenhuma: o programa de arranque
+Demora vários minutos (o core enche a FPGA quase toda) e no fim o Gowin às vezes queixa-se ao fechar;
+se o `.fs` apareceu, está feito. O resultado fica em `core/impl/pnr/*.fs`. Não precisa de ROM nenhuma: o programa de arranque
 (`arranque.hex`) já está feito; para o refazer, `sjasmplus arranque/arranque.asm` e converter o
 `.bin` para `.hex` (um byte por linha, em hexadecimal). Com as ferramentas livres (GHDL + yosys +
 nextpnr-himbaechel + apicula) ainda não experimentámos; o core usa PLLs e serializadores da Gowin,
@@ -197,7 +198,23 @@ que já tem os dois.)
 - `fontes/`: o código de tudo o que vai no cartão (navegador, GO*, PENTA, SOMNAV, NAVPT3, plugin MOD,
   stub do TAP do 2068). Montam-se com o **sjasmplus**.
 
-## 7. O que está aqui e de quem é
+## 7. Ligações (de onde vem cada coisa)
+
+- Tang Nano 20K, documentação da Sipeed: https://wiki.sipeed.com/hardware/en/tang/tang-nano-20k/nano-20k.html
+- Gowin EDA (Education) e Gowin Programmer: https://www.gowinsemi.com/en/support/download_eda/
+- openFPGALoader: https://github.com/trabucayre/openFPGALoader
+- esxDOS: https://www.esxdos.org
+- FPGA Companion / Partner para o BL616 (teclado, rato, comando): https://github.com/MiSTle-Dev/FPGA-Companion
+- Ferramentas de gravar o BL616 (BLDevCube, BLFlashCommand), Bouffalo Lab: https://dev.bouffalolab.com
+- Firmware do General Sound (fontes): https://github.com/psbhlw/gs-firmware
+- ROMs do ZX Spectrum 48K e 128K (a Amstrad autoriza a distribuição para emulação):
+  https://worldofspectrum.org e https://spectrumcomputing.co.uk
+- ROMs do Timex TC2048 e TC2068: https://www.timexsinclair.com
+- sjasmplus (para montar os programas do cartão): https://github.com/z00m128/sjasmplus
+- DivTIESUS (Miguel Angel Rodríguez Jodar): https://github.com/mcleod-ideafix/divtiesus
+- T80 com a correcção do registo Q: https://github.com/zambujal/T80-Q-fix
+
+## 8. O que está aqui e de quem é
 
 Código próprio (GPL v3): o core `core_timmy.vhd` e o `top.vhd`, o vídeo e o HDMI (`video_timex`,
 `hdmi_tx`, `tmds_enc`), a cassete, o som, a ponte do cartão, o programa de arranque e a sua letra, o
