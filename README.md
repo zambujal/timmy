@@ -27,17 +27,19 @@ o esxDOS, que cada um mete lá (ver "O cartão").
 - Três coisas de outros que não estão aqui:
   - a **ROM do TC2048** (16384 bytes) — ou a do ZX Spectrum 48K, que também serve;
   - o **esxDOS** (www.esxdos.org): o pacote traz a pasta `BIN`, a pasta `SYS` e o ficheiro `ESXMMC.BIN`;
-  - os **plugins do navegador do Bob Fossil** (TAP, Z80, SNA, TRD, PT3…), a pasta `BIN/BPLUGINS`. O
-    esxDOS **não os traz**; vêm no zip do navegador dele, em http://www.thefossilrecord.co.uk
-    (`BROWSE_latest.zip`). O nosso navegador foi feito em cima do dele e corre os jogos por estes
-    plugins: sem eles não abre nada, e os índices ficam vazios.
+  - o **navegador do Bob Fossil** (http://www.thefossilrecord.co.uk, `BROWSE_latest.zip`): traz o
+    `SYS/NMI.SYS` que carrega um navegador externo e os **plugins** `BIN/BPLUGINS` (TAP, Z80, SNA, TRD,
+    PT3…). O esxDOS **não os traz**. O nosso navegador foi feito em cima do dele, entra pelo NMI.SYS dele e
+    corre os jogos por estes plugins: sem isto fica o navegador a preto e branco do esxDOS, e os índices
+    ficam vazios.
 
 ## 2. O cartão
 
 1. Formatar em FAT32.
 2. Copiar do pacote do esxDOS as pastas **`BIN`**, **`SYS`** e **`TMP`** para a raiz do cartão.
-3. Do zip do navegador do Bob Fossil copiar **só a pasta `BIN/BPLUGINS`** para dentro do `BIN` do cartão
-   (o `BROWSE.BIN` dele não: o nosso vem a seguir).
+3. Copiar o zip do navegador do **Bob Fossil** inteiro por cima (o `BIN` com os `BPLUGINS` e o
+   **`SYS/NMI.SYS`** dele: o NMI.SYS do esxDOS traz um navegador a preto e branco dentro e nunca carrega o
+   `/BIN/BROWSE.BIN`; o do Bob Fossil carrega-o, e é por aí que o nosso entra).
 4. Copiar para cima destas a pasta **`cartao/`** deste repositório (o `BIN` e o `SYS` daqui juntam-se aos do
    esxDOS: navegador, GO128/GO256/GO1024/GO2068, PENTA, plugin MOD, música de arranque).
 5. Criar a pasta **`SYS/ROMS`** e meter lá:
@@ -64,7 +66,7 @@ Resumindo, a raiz do cartão fica assim:
 BIN/        esxDOS + BPLUGINS/ do Bob Fossil (TAP, Z80, SNA, TRD, PT3...) + os nossos (BROWSE.BIN, NAVHR.BIN,
             GO128, GO256, GO1024, GO2068, PENTA.BIN, NAVPT3.BIN, SOMNAV.BIN, BPLUGINS/MOD, BPLUGINS/CFG/MOD.CFG e MOD.INI)
             (opcionais: 128.rom, 2068.rom, GS105B.ROM, PLUG2068/TAP)
-SYS/        esxDOS + NAV.SOM + ROMS/TC2048.ROM + ROMS/ESXMMC.BIN
+SYS/        esxDOS + NMI.SYS do Bob Fossil + NAV.SOM + ROMS/TC2048.ROM + ROMS/ESXMMC.BIN
 TMP/        esxDOS
 JOGOS/ ...  o que quiseres
 ```
@@ -231,6 +233,8 @@ Precisa só de Python 3.
    O `cartao.py` começa por dizer `plugins em .../BIN/BPLUGINS: ...`: só entram no índice os ficheiros
    que o navegador consegue correr (os que têm plugin). Se só aparecer `MOD` e quase tudo ficar
    "sem plugin, fora", falta a pasta `BIN/BPLUGINS` do Bob Fossil (secção 2, passo 3).
+   Se no Tang o navegador aparecer a preto e branco, com nomes curtos, é o do esxDOS: falta o `SYS/NMI.SYS`
+   do Bob Fossil (mesmo passo), ou a pasta `cartao/` não ficou por cima.
 
 Pode-se repetir sempre que se juntam jogos (ele refaz os índices). Sem índices tudo funciona na mesma,
 só com os nomes curtos e mais devagar nas pastas muito grandes.
