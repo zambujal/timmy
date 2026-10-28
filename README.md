@@ -196,14 +196,26 @@ que já tem os dois.)
 - A Tang tem de ficar mesmo sem corrente ao mudar de um para o outro: o BL616 só decide o modo ao
   arrancar.
 
-## 6. Ferramentas
+## 6. Ferramentas: os índices do navegador (opcional)
 
-- `ferramentas/cartao.py` + `config.ini`: no PC, arruma as pastas de jogos por letra, mete a máquina no
-  nome e faz os índices do navegador (`_NAV/*.IDX`) — para cartões com milhares de jogos. Sem índices
-  o navegador mostra as pastas tal como estão, só mais devagar nas muito grandes.
-  `python3 cartao.py E:\` mostra o que faria; `--fazer` faz.
-- `fontes/`: o código de tudo o que vai no cartão (navegador, GO*, PENTA, SOMNAV, NAVPT3, plugin MOD,
-  stub do TAP do 2068). Montam-se com o **sjasmplus**.
+Numa pasta com milhares de jogos o navegador demora a ler a pasta de cada vez. O `ferramentas/cartao.py`
+faz, no PC, índices que o tornam instantâneo, e de caminho arruma a colecção: mete a máquina no nome
+de cada ficheiro (`[48K]`, `[128K]`…), separa por letra e título, e escreve os índices em `_NAV/*.IDX`
+em cada pasta. Precisa só de Python 3.
+
+1. No `ferramentas/config.ini`, em `jogos = ...`, põe os nomes das pastas da raiz do cartão que ele
+   deve tratar (separadas por espaços); em `[pastas]` as que aparecem na barra de baixo do navegador.
+   Sem `jogos`, trata todas as pastas da raiz menos as do sistema.
+2. Com o cartão no PC, primeiro só a ver o que faria:
+   - Linux: `python3 ferramentas/cartao.py /run/media/$USER/NOME_DO_CARTAO`
+   - Windows: `python ferramentas\cartao.py E:\` (a letra do cartão)
+3. Se estiver bem, o mesmo comando com `--fazer` no fim.
+
+Pode-se repetir sempre que se juntam jogos. Sem índices tudo funciona na mesma: o navegador mostra a
+pasta tal como o esxDOS a lê, só mais devagar nas muito grandes.
+
+`fontes/` tem o código de tudo o que vai no cartão (navegador, GO*, PENTA, SOMNAV, NAVPT3, plugin MOD,
+stub do TAP do 2068). Montam-se com o **sjasmplus**.
 
 ## 7. Ligações (de onde vem cada coisa)
 
