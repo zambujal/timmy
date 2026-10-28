@@ -1,0 +1,7 @@
+Teste do programa de arranque (arranque.asm) num Z80 emulado (z80emu, de Lin Ke-Fong) com um cartao SD de
+mentira em cima de imagens FAT32/FAT16 (mkfs.vfat + mtools). O z80emu nao vem aqui: copiar z80emu.c/.h,
+instructions.h, macros.h, tables.h e z80config.h para esta pasta e corrigir duas coisas nele para o teste:
+INIR com B = 0 sao 256 iteracoes (b = B ? B : 256) e as portas IN/OUT com o endereco de 16 bits (BC, ou A<<8|n).
+  gcc -O2 -o teste teste.c z80emu.c
+  ./faz_imagens.sh; python3 fragmenta.py f32g.img 0; ./teste f32g.img ../arranque.bin sdhc
+Resultado esperado: "ROM IGUAL, esxDOS IGUAL".

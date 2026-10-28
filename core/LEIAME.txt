@@ -1,0 +1,5 @@
+Core do Timmy para a Tang Nano 20K (Gowin GW2AR-18). Compilar com o Gowin EDA:  gw_sh timmy.tcl
+(o .fs fica em impl/pnr/). arranque.hex = o programa de arranque (arranque/arranque.asm), que vai para a
+memoria onde antes estava o esxDOS; as ROMs vem do cartao (SYS/ROMS). core_timex.vhd e core_penta.vhd
+sao cores anteriores (ficam por referencia; so' compilam com os modulos rom_* e as ROMs em .hex, que nao
+estao aqui). O top escolhe o core Timmy pelo generic TIMMY.

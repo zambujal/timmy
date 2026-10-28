@@ -1,0 +1,9 @@
+core/impl/
+core/*.hex
+!core/arranque.hex
+cartao/SYS/ROMS/*.ROM
+cartao/SYS/ROMS/*.BIN
+cartao/BIN/PLUG2068/TAP
+*.fs
+*.bin.tmp
+__pycache__/

@@ -1,0 +1,4 @@
+Metes aqui:
+  TC2048.ROM   16384 bytes   a ROM do Timex TC2048 (ou a do ZX Spectrum 48K)
+  ESXMMC.BIN    8192 bytes   o esxDOS para DivMMC, tal como vem no pacote de www.esxdos.org
+O programa de arranque do core le-os ao ligar.

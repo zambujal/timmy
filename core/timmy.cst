@@ -1,0 +1,91 @@
+// Tang Nano 20K - Timmy 2048div (formato da Gowin EDA)
+// A SDRAM de dentro (O_sdram_*, IO_sdram_dq) nao leva pinos: a Gowin liga-a sozinha.
+IO_LOC  "I_clk" 4;
+IO_PORT "I_clk" IO_TYPE=LVCMOS33 PULL_MODE=UP;
+
+IO_LOC  "O_tmds_clk_p" 33,34;
+IO_PORT "O_tmds_clk_p" PULL_MODE=NONE DRIVE=3.5;
+IO_LOC  "O_tmds_data_p[0]" 35,36;
+IO_PORT "O_tmds_data_p[0]" PULL_MODE=NONE DRIVE=3.5;
+IO_LOC  "O_tmds_data_p[1]" 37,38;
+IO_PORT "O_tmds_data_p[1]" PULL_MODE=NONE DRIVE=3.5;
+IO_LOC  "O_tmds_data_p[2]" 39,40;
+IO_PORT "O_tmds_data_p[2]" PULL_MODE=NONE DRIVE=3.5;
+
+IO_LOC  "O_led[0]" 15;
+IO_PORT "O_led[0]" IO_TYPE=LVCMOS33 PULL_MODE=UP DRIVE=8;
+IO_LOC  "O_led[1]" 16;
+IO_PORT "O_led[1]" IO_TYPE=LVCMOS33 PULL_MODE=UP DRIVE=8;
+IO_LOC  "O_led3" 17;
+IO_PORT "O_led3" IO_TYPE=LVCMOS33 PULL_MODE=UP DRIVE=8;
+
+IO_LOC  "I_reset" 88;
+IO_PORT "I_reset" IO_TYPE=LVCMOS33 PULL_MODE=DOWN;
+IO_LOC  "I_nmi" 87;
+IO_PORT "I_nmi" IO_TYPE=LVCMOS33 PULL_MODE=DOWN;
+
+IO_LOC  "O_sd_clk" 83;
+IO_PORT "O_sd_clk" IO_TYPE=LVCMOS33;
+IO_LOC  "O_sd_mosi" 82;
+IO_PORT "O_sd_mosi" IO_TYPE=LVCMOS33;
+IO_LOC  "I_sd_miso" 84;
+IO_PORT "I_sd_miso" IO_TYPE=LVCMOS33 PULL_MODE=UP;
+IO_LOC  "O_sd_cs_n" 81;
+IO_PORT "O_sd_cs_n" IO_TYPE=LVCMOS33;
+IO_LOC  "O_sd_dat1" 85;
+IO_PORT "O_sd_dat1" IO_TYPE=LVCMOS33;
+IO_LOC  "O_sd_dat2" 80;
+IO_PORT "O_sd_dat2" IO_TYPE=LVCMOS33;
+IO_LOC  "O_led_ofs[0]" 18;
+IO_PORT "O_led_ofs[0]" IO_TYPE=LVCMOS33 PULL_MODE=UP DRIVE=8;
+IO_LOC  "O_led_ofs[1]" 19;
+IO_PORT "O_led_ofs[1]" IO_TYPE=LVCMOS33 PULL_MODE=UP DRIVE=8;
+IO_LOC  "O_led_ofs[2]" 20;
+IO_PORT "O_led_ofs[2]" IO_TYPE=LVCMOS33 PULL_MODE=UP DRIVE=8;
+IO_LOC  "O_reconfig_n" 73;
+IO_PORT "O_reconfig_n" IO_TYPE=LVCMOS33 PULL_MODE=NONE;
+// FPGA-Companion (BL616 da placa): teclado USB
+IO_LOC  "I_spi_csn" 86;
+IO_PORT "I_spi_csn" IO_TYPE=LVCMOS33 PULL_MODE=UP;
+IO_LOC  "I_spi_sclk" 13;
+IO_PORT "I_spi_sclk" IO_TYPE=LVCMOS33 PULL_MODE=UP;
+IO_LOC  "I_spi_mosi" 76;
+IO_PORT "I_spi_mosi" IO_TYPE=LVCMOS33 PULL_MODE=UP;
+IO_LOC  "O_spi_miso" 75;
+IO_PORT "O_spi_miso" IO_TYPE=LVCMOS33 PULL_MODE=NONE DRIVE=8;
+IO_LOC  "O_spi_irqn" 69;
+IO_PORT "O_spi_irqn" IO_TYPE=LVCMOS33 PULL_MODE=NONE DRIVE=8;
+
+// 2026-10-22: ESP32-S3 (SPI octal), resistencias de 100 ohm em serie na placa
+IO_LOC  "IO_esp_d[0]" 27;
+IO_PORT "IO_esp_d[0]" IO_TYPE=LVCMOS33 PULL_MODE=UP DRIVE=8;
+IO_LOC  "IO_esp_d[1]" 28;
+IO_PORT "IO_esp_d[1]" IO_TYPE=LVCMOS33 PULL_MODE=UP DRIVE=8;
+IO_LOC  "IO_esp_d[2]" 26;
+IO_PORT "IO_esp_d[2]" IO_TYPE=LVCMOS33 PULL_MODE=UP DRIVE=8;
+IO_LOC  "IO_esp_d[3]" 25;
+IO_PORT "IO_esp_d[3]" IO_TYPE=LVCMOS33 PULL_MODE=UP DRIVE=8;
+IO_LOC  "IO_esp_d[4]" 29;
+IO_PORT "IO_esp_d[4]" IO_TYPE=LVCMOS33 PULL_MODE=UP DRIVE=8;
+IO_LOC  "IO_esp_d[5]" 30;
+IO_PORT "IO_esp_d[5]" IO_TYPE=LVCMOS33 PULL_MODE=UP DRIVE=8;
+IO_LOC  "IO_esp_d[6]" 31;
+IO_PORT "IO_esp_d[6]" IO_TYPE=LVCMOS33 PULL_MODE=UP DRIVE=8;
+IO_LOC  "IO_esp_d[7]" 42;
+IO_PORT "IO_esp_d[7]" IO_TYPE=LVCMOS33 PULL_MODE=UP DRIVE=8;
+IO_LOC  "I_esp_clk" 41;
+IO_PORT "I_esp_clk" IO_TYPE=LVCMOS33 PULL_MODE=DOWN;
+IO_LOC  "I_esp_cs" 48;
+IO_PORT "I_esp_cs" IO_TYPE=LVCMOS33 PULL_MODE=UP;
+IO_LOC  "O_esp_irq" 55;
+IO_PORT "O_esp_irq" IO_TYPE=LVCMOS33 PULL_MODE=NONE DRIVE=8;
+IO_LOC  "I_esp_dir" 49;
+IO_PORT "I_esp_dir" IO_TYPE=LVCMOS33 PULL_MODE=DOWN;
+
+// (esp54) I2S do ESP32-S3 (o ESP e' o mestre): J5 18/19/20
+IO_LOC  "I_i2s_bck" 71;
+IO_PORT "I_i2s_bck" IO_TYPE=LVCMOS33 PULL_MODE=DOWN;
+IO_LOC  "I_i2s_ws" 53;
+IO_PORT "I_i2s_ws" IO_TYPE=LVCMOS33 PULL_MODE=DOWN;
+IO_LOC  "I_i2s_d" 52;
+IO_PORT "I_i2s_d" IO_TYPE=LVCMOS33 PULL_MODE=DOWN;
