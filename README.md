@@ -60,6 +60,13 @@ o esxDOS, que cada um mete lá (ver "O cartão").
    ao navegador os nomes compridos, a coluna das letras e a barra de cima com o menu das máquinas. Sem
    eles o navegador funciona, mas incompleto.
 
+Em Linux, os passos 2, 3, 4 e 8 fazem-se de uma vez com o `ferramentas/faz_cartao.sh` (descarrega ele
+próprio o zip do Bob Fossil; as ROMs metes tu depois, ou antes):
+
+```
+cd timmy/ferramentas && ./faz_cartao.sh /run/media/$USER/NOME_DO_CARTAO ~/Transferências/esxdos089.zip
+```
+
 Resumindo, a raiz do cartão fica assim:
 
 ```
