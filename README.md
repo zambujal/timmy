@@ -47,9 +47,10 @@ o esxDOS, que cada um mete lá (ver "O cartão").
    - `BIN/PLUG2068/TAP` — plugin TAP para o TC2068, feito a partir do plugin TAP do esxDOS com
      `python3 fontes/plug2068/faz_plug2068.py BIN/BPLUGINS/TAP BIN/PLUG2068/TAP`.
    Sem eles o Timmy é um TC2048 com esxDOS; o navegador avisa quando falta um.
-6. Os jogos vão em pastas na raiz (por exemplo `JOGOS/`, ou uma por letra). O navegador vê qualquer pasta;
-   para pastas com milhares de ficheiros, `ferramentas/cartao.py` faz índices que o tornam instantâneo
-   (ver "Ferramentas"). Não é obrigatório.
+6. Os jogos vão em pastas na raiz (por exemplo `JOGOS/`, ou uma por letra).
+7. **No fim, com o cartão no PC, corre o `ferramentas/cartao.py`** (secção 6): faz os índices que dão
+   ao navegador os nomes compridos, a coluna das letras e a barra de cima com o menu das máquinas. Sem
+   eles o navegador funciona, mas incompleto.
 
 Resumindo, a raiz do cartão fica assim:
 
@@ -197,10 +198,12 @@ que já tem os dois.)
 - O Tang tem de ficar mesmo sem corrente ao mudar de um para o outro: o BL616 só decide o modo ao
   arrancar.
 
-## 6. Ferramentas: os índices do navegador (opcional)
+## 6. Ferramentas: os índices do navegador (importante)
 
-Sem índices, o navegador lê cada pasta pelo esxDOS: funciona, mas os nomes aparecem curtos, em 8.3
-(`JETSETW~1.TAP`), e uma pasta com milhares de ficheiros demora a abrir. Os **índices** são ficheiros
+**Convém fazer isto logo:** sem índices o navegador fica incompleto. Lê cada pasta pelo esxDOS, mas os
+nomes aparecem curtos, em 8.3 (`JETSETW~1.TAP`), não há a coluna das letras nem a **barra de cima com a
+máquina** (onde o ENTER abre o menu das máquinas e das placas), e uma pasta com milhares de ficheiros
+demora a abrir. Sem índice, o menu das máquinas só se abre com as teclas 1 a 4. Os **índices** são ficheiros
 `_NAV/*.IDX` que o `ferramentas/cartao.py` escreve em cada pasta, no PC, com o nome comprido de cada
 jogo, o nome 8.3 e a máquina; com eles o navegador mostra os nomes inteiros, a máquina (`[48K]`,
 `[128K]`…), as letras na coluna da esquerda, e abre qualquer pasta num instante. De caminho o
