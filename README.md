@@ -115,7 +115,7 @@ Com o Gowin EDA (1.9.11 ou mais recente; a versão Education chega), na pasta `c
 gw_sh timmy.tcl
 ```
 
-Demora vários minutos (o core enche a FPGA quase toda) e no fim o Gowin às vezes queixa-se ao fechar;
+Demora uns 10 minutos num PC normal (o core enche a FPGA quase toda) e no fim o Gowin às vezes queixa-se ao fechar;
 se o `.fs` apareceu, está feito. O resultado fica em `core/impl/pnr/*.fs`. Não precisa de ROM nenhuma: o programa de arranque
 (`arranque.hex`) já está feito; para o refazer, `sjasmplus arranque/arranque.asm` e converter o
 `.bin` para `.hex` (um byte por linha, em hexadecimal). Com as ferramentas livres (GHDL + yosys +
@@ -128,10 +128,17 @@ por isso é provável que precise de adaptações.
 - Ao ligar aparece "TIMMY - ARRANQUE" um instante (o programa a ler as ROMs do cartão) e depois o
   esxDOS e o BASIC do TC2048. Se faltar alguma coisa no cartão, o ecrã diz o quê e a borda fica
   vermelha; corrige-se o cartão e ele tenta sozinho de 2 em 2 s.
-- **NMI** (o botão da Tang ou a tecla do teclado, ver `docs/teclas.md`): abre o navegador. Nele:
-  ENTER num ficheiro carrega-o (TAP, TZX, SNA, Z80, TRD, PT3 e outros formatos AY, MOD no General Sound);
-  o menu das máquinas muda para 48K / 128K / Timex 128 / TC2068 / Pentagon e liga o General Sound e o
-  TurboSound. As teclas estão em `docs/teclas.md`.
+- **Os dois botões da Tang:**
+  - o do **pino 87** é o **NMI**: abre o navegador do cartão. Nele: ENTER num ficheiro carrega-o
+    (TAP, TZX, SNA, Z80, TRD, PT3 e outros formatos AY, MOD no General Sound); o menu das máquinas
+    muda para 48K / 128K / Timex 128 / TC2068 / Pentagon e liga o General Sound e o TurboSound. As
+    teclas estão em `docs/teclas.md`.
+  - o do **pino 88** anda numa lista de 16 escolhas, mostrada em binário nos 4 LEDs (que ficam acesos
+    com o número escolhido). O botão do NMI faz então essa escolha em vez do NMI: 0 (LEDs apagados)
+    NMI, 1 `.ls`, 2 `.go128`, 3 `.go128 -penta`, 4 `.go1024`, 5 `.go2068`, 6 RESET+NMI (volta ao
+    TC2048), 8 RESET, 10 `.gs`, 15 turbo. Para voltar ao NMI normal, carrega até os LEDs apagarem.
+    Carregado 3 s troca de core (multiboot, se houver outro em `0x100000`).
+- Pelo teclado, sem a placa ESP32, não há tecla de NMI: é o botão.
 
 ## 5. O teclado USB, o rato e o comando (firmware do BL616)
 
