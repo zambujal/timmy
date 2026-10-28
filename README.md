@@ -26,8 +26,10 @@ o esxDOS, que cada um mete lá (ver "O cartão").
 - **Cabo HDMI** para uma TV ou monitor que aceite 720p a 50 Hz.
 - No PC: o **Gowin EDA** (gratuito, versão *Education*, Windows ou Linux) só para o **Programmer**, ou o
   **openFPGALoader** em Linux.
-- Três coisas de outros que não estão aqui:
-  - a **ROM do TC2048** (16384 bytes) — ou a do ZX Spectrum 48K, que também serve;
+- O que é de outros e não está aqui:
+  - a **ROM do TC2048** (16384 bytes) — ou a do ZX Spectrum 48K, que também serve — com que o core arranca;
+  - para o modo **TC2068**, a **ROM do TC2068** (a home de 16K + a EXROM de 8K, `BIN/2068.rom`; e para o
+    128K / Pentagon a do Spectrum 128, `BIN/128.rom`) — ver o passo 6 do cartão;
   - o **esxDOS** (www.esxdos.org): o pacote traz a pasta `BIN`, a pasta `SYS` e o ficheiro `ESXMMC.BIN`;
   - o **navegador do Bob Fossil** (http://www.thefossilrecord.co.uk, `BROWSE_latest.zip`): traz o
     `SYS/NMI.SYS` que carrega um navegador externo e os **plugins** `BIN/BPLUGINS` (TAP, Z80, SNA, TRD,
