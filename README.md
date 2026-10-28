@@ -268,18 +268,34 @@ stub do TAP do 2068). Montam-se com o **sjasmplus**.
 - ROMs do Timex TC2048 e TC2068: https://www.timexsinclair.com
 - sjasmplus (para montar os programas do cartão): https://github.com/z00m128/sjasmplus
 - DivTIESUS (Miguel Angel Rodríguez Jodar): https://github.com/mcleod-ideafix/divtiesus
-- T80 com a correcção do registo Q: https://github.com/zambujal/T80-Q-fix
+- T80 reparado e completado por mim em 2026 (registo Q): https://github.com/zambujal/T80-Q-fix
+- O SCLD em CPLD, reparado e completado por mim (o scld.vhd de que o core partiu): https://github.com/zambujal/CPLD-XC95288XL-replacement-for-scld-timex
+- O modelo do SCLD do Load ZX Museum (Álvaro Lopes, Paulo Cortesão): https://github.com/LoadZX/timex_scld
 
 ## 8. O que está aqui e de quem é
+
+**A base é o SCLD.** O chip do Timex (o SCLD, a "ULA" do TC2048/TC2068) está aqui como o modelo em VHDL
+do Load ZX Museum, de **Álvaro Lopes** e Paulo Cortesão (CC BY-SA 4.0), que eu reparei e completei para
+o meu CPLD de substituição do SCLD, o `scld.vhd` do github.com/zambujal/CPLD-XC95288XL-replacement-for-scld-timex
+(IN nos portos FF e F4, EXROM/HOME, modos de ecrã, contenção, 128K pelo F4/7FFD, barramento flutuante…),
+testado num TC2068 verdadeiro. No `core_timmy.vhd` está a parte desse SCLD que não é DRAM, reescrita para
+o relógio do core; o resto (portos, modos, tempos) é o mesmo.
+
+**O Z80 é o T80** (Daniel Wallner, Sorgelig), **que eu reparei e completei em 2026**: ao testar o Timmy
+reparei que o T80 falhava nos testes de flags do Z80 (o registo Q do Zilog nos SCF/CCF: os bits 3 e 5 dependem de a
+instrução anterior ter escrito os flags; SET/RES não contam, POP AF e EX AF também não; o prefixo DD/FD
+conta como instrução sem flags). Corrigi-o no `T80.vhd` daqui (comentários com a data) e em
+github.com/zambujal/T80-Q-fix. Passa os testes todos.
 
 Código próprio (GPL v3): o core `core_timmy.vhd` e o `top.vhd`, o vídeo e o HDMI (`video_timex`,
 `hdmi_tx`, `tmds_enc`), a cassete, o som, a ponte do cartão, o programa de arranque e a sua letra, o
 navegador (`fontes/nav`, com letra própria) e os restantes programas do cartão, o `cartao.py`.
 
 Código de outros, cada um com a sua licença (ver `LICENCAS.md`):
-T80 (Daniel Wallner, Sorgelig), YM2149 (MikeJ), General Sound, SID, sysctrl e mcu_spi (MiSTer /
-MiSTeryNano, GPL), DivTIESUS e ULAplus (Miguel Angel Rodríguez Jodar / ZX-UNO, GPL v3), o leitor
-PT3 (S. V. Bulba), e o GO128 baseado no LOADROM do DivTIESUS (GPL v3).
+SCLD (Load ZX Museum, Álvaro Lopes, Paulo Cortesão, CC BY-SA 4.0), T80 (Daniel Wallner, Sorgelig),
+YM2149 (MikeJ), General Sound, SID, sysctrl e mcu_spi (MiSTer / MiSTeryNano, GPL), DivTIESUS e
+ULAplus (Miguel Angel Rodríguez Jodar / ZX-UNO, GPL v3), o leitor PT3 (S. V. Bulba), e o GO128
+baseado no LOADROM do DivTIESUS (GPL v3).
 
 Não estão aqui, por terem direitos ou serem de outros: as ROMs (Timex / Sinclair / Amstrad), o esxDOS
 (www.esxdos.org), os plugins do navegador do Bob Fossil (www.thefossilrecord.co.uk), o firmware do BL616.

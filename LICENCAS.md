@@ -5,7 +5,8 @@ ficheiro de outros autores mantém o seu cabeçalho e a sua licença:
 
 | O quê | De quem | Licença |
 |---|---|---|
-| `core/src/T80*.vhd` | Daniel Wallner (2001-2002), Sorgelig (2018) | a do T80 (tipo BSD, no cabeçalho) |
+| a parte SCLD do `core/src/core_timmy.vhd` | modelo do SCLD do Load ZX Museum (Álvaro Lopes, Paulo Cortesão), reparado e completado por António Vitor (CPLD-XC95288XL-replacement-for-scld-timex) | CC BY-SA 4.0 |
+| `core/src/T80*.vhd` | Daniel Wallner (2001-2002), Sorgelig (2018); reparado e completado em 2026 (registo Q, flags) por António Vitor | a do T80 (tipo BSD, no cabeçalho) |
 | `core/src/ym2149.vhd` | MikeJ (2005) | a do cabeçalho (tipo BSD) |
 | `core/src/gs.vhd` | tradução para VHDL do gs.v do core ZX Spectrum do MiSTer (Sorgelig) | GPL |
 | `core/src/sysctrl.vhd`, `mcu_spi.vhd` | a partir do MiSTeryNano (MiSTle-Dev, Till Harbaum) | GPL |
