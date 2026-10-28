@@ -1,4 +1,4 @@
-# Timmy — Timex TC2068 e TC2048 (e mais) numa Tang Nano 20K
+# Timmy — Timex TC2068 e TC2048 (e mais) num Tang Nano 20K
 
 O Timmy é um core em VHDL para a placa **Sipeed Tang Nano 20K** (FPGA Gowin GW2AR-18) que faz de
 **Timex TC2068** e **TC2048**, com saída **HDMI 720p50**, cartão **microSD** com **esxDOS** (DivMMC),
@@ -7,7 +7,7 @@ EXROM, os modos de ecrã do Timex: hi-colour, hi-res 512x192, e esxDOS também n
 **ZX Spectrum 48K / 128K** ou a **Pentagon 128/512/1024**, com **General Sound**, **TurboSound** (3 AY),
 **SID**, **ULAplus**, rato Kempston, Z80 até 27 MHz e cassete TAP/TZX.
 
-Precisa só da Tang Nano 20K, de um cartão microSD e de um teclado USB. (Há à parte uma placa com um
+Precisa só do Tang Nano 20K, de um cartão microSD e de um teclado USB. (Há à parte uma placa com um
 ESP32-S3 que dá menu com capas, rede, MP3 e mais; esse projecto depende deste e não é preciso para nada
 do que está aqui.)
 
@@ -20,7 +20,7 @@ o esxDOS, que cada um mete lá (ver "O cartão").
 
 - **Tang Nano 20K** (Sipeed). Qualquer revisão; a placa liga-se ao PC pelo USB-C.
 - **Cartão microSD** formatado em **FAT32** (até 32 GB é o mais simples).
-- **Teclado USB** e um adaptador **USB-C OTG** (ou um hub USB-C alimentado) para o ligar à Tang.
+- **Teclado USB** e um adaptador **USB-C OTG** (ou um hub USB-C alimentado) para o ligar ao Tang.
 - **Cabo HDMI** para uma TV ou monitor que aceite 720p a 50 Hz.
 - No PC: o **Gowin EDA** (gratuito, versão *Education*, Windows ou Linux) só para o **Programmer**, ou o
   **openFPGALoader** em Linux.
@@ -62,7 +62,7 @@ TMP/        esxDOS
 JOGOS/ ...  o que quiseres
 ```
 
-## 3. Gravar o core na Tang Nano 20K
+## 3. Gravar o core no Tang Nano 20K
 
 Há duas maneiras de ter o core: **usar o já compilado** (`timmy.fs`, na secção **Releases** deste
 repositório) ou **compilá-lo** com o Gowin EDA (secção 3.4). Nas duas o ficheiro `.fs` grava-se na
@@ -83,7 +83,7 @@ estiver ligada **directamente a uma porta do PC, sem hub**.
    - **Operation:** `exFlash Erase, Program`
    - **FS File:** o `timmy.fs`
    - **External Flash:** `Generic Flash`, endereço `0x000000`
-4. **Program** (o botão de gravar). Demora uns segundos. Desligar e voltar a ligar a Tang: o Timmy
+4. **Program** (o botão de gravar). Demora uns segundos. Desligar e voltar a ligar o Tang: o Timmy
    arranca.
 
 ### 3.2 Windows, com o openFPGALoader (ferramenta livre)
@@ -91,7 +91,7 @@ estiver ligada **directamente a uma porta do PC, sem hub**.
 1. Instalar o **MSYS2** (www.msys2.org) e, no terminal "MSYS2 UCRT64":
    `pacman -S mingw-w64-ucrt-x86_64-openFPGALoader`
 2. O Windows tem de dar a interface do programador ao driver **WinUSB**: correr o **Zadig**
-   (zadig.akeo.ie), em *Options → List All Devices*, escolher a **interface 0** do programador da Tang
+   (zadig.akeo.ie), em *Options → List All Devices*, escolher a **interface 0** do programador do Tang
    (FT2232-compatível) e instalar o WinUSB. (Isto tira a interface ao driver FTDI; o Gowin Programmer
    deixa de a ver até se repor o driver FTDI, também com o Zadig.)
 3. No mesmo terminal: `openFPGALoader -b tangnano20k -f timmy.fs`
@@ -125,11 +125,11 @@ por isso é provável que precise de adaptações.
 
 ## 4. Ligar e usar
 
-- Ligar o cartão, o HDMI e o teclado; alimentar a Tang pelo USB-C (um carregador USB chega).
+- Ligar o cartão, o HDMI e o teclado; alimentar o Tang pelo USB-C (um carregador USB chega).
 - Ao ligar aparece "TIMMY - ARRANQUE" um instante (o programa a ler as ROMs do cartão) e depois o
   esxDOS e o BASIC do TC2048. Se faltar alguma coisa no cartão, o ecrã diz o quê e a borda fica
   vermelha; corrige-se o cartão e ele tenta sozinho de 2 em 2 s.
-- **Os dois botões da Tang:**
+- **Os dois botões do Tang:**
   - o do **pino 87** é o **NMI**: abre o navegador do cartão. Nele: ENTER num ficheiro carrega-o
     (TAP, TZX, SNA, Z80, TRD, PT3 e outros formatos AY, MOD no General Sound); o menu das máquinas
     muda para 48K / 128K / Timex 128 / TC2068 / Pentagon e liga o General Sound e o TurboSound. As
@@ -143,7 +143,7 @@ por isso é provável que precise de adaptações.
 
 ## 5. O teclado USB, o rato e o comando (firmware do BL616)
 
-A Tang Nano 20K tem um chip **BL616** que de fábrica é só o programador da FPGA. Para o teclado USB,
+O Tang Nano 20K tem um chip **BL616** que de fábrica é só o programador da FPGA. Para o teclado USB,
 o rato (Kempston) e o comando (joystick Kempston) chegarem ao core, o BL616 tem de ter o firmware
 **FPGA Companion**, de Till Harbaum (github.com/MiSTle-Dev/FPGA-Companion), que vem acompanhado do
 **FPGA Partner**: com o Partner, a placa arranca como programador se ao ligar estiver num PC e como
@@ -157,7 +157,7 @@ mas é por conta e risco de cada um.
 
 ### 5.1 O que descarregar
 
-- Do release do FPGA-Companion para a Tang Nano 20K: `bl616_fpga_partner_nano20k.bin`,
+- Do release do FPGA-Companion para o Tang Nano 20K: `bl616_fpga_partner_nano20k.bin`,
   `fpga_companion_nano20k.bin` e o `flash_nano20k.ini` (grava os dois: o Partner em `0x000000` e o
   Companion em `0x40000`).
 - A ferramenta de gravar da Bouffalo Lab: em Windows o **BLDevCube** (programa gráfico); em Linux o
@@ -166,7 +166,7 @@ mas é por conta e risco de cada um.
 
 ### 5.2 Pôr o BL616 em modo de gravação
 
-Com a Tang **desligada**, carregar no botão **UPDATE** (o que está ao lado do HDMI) e, sem o largar,
+Com o Tang **desligado**, carregar no botão **UPDATE** (o que está ao lado do HDMI) e, sem o largar,
 ligar o USB ao PC. Aparece uma porta série nova, "Bouffalo CDC DEMO": em Windows uma `COMx`, em
 Linux `/dev/ttyACM0` (ou outro número; `ls /dev/ttyACM*`). Pode-se largar o botão.
 
@@ -187,14 +187,14 @@ que já tem os dois.)
 
 ### 5.4 Usar
 
-- Desligar e voltar a ligar a Tang (sem o UPDATE).
-- **Para jogar:** o teclado (ou um hub com teclado, rato e comando) ligado ao USB-C da Tang por um
+- Desligar e voltar a ligar o Tang (sem o UPDATE).
+- **Para jogar:** o teclado (ou um hub com teclado, rato e comando) ligado ao USB-C do Tang por um
   adaptador OTG; a alimentação vem pelo hub (se for alimentado) ou por um carregador num hub com
   entrada de energia. O core vê o teclado, o rato e o comando.
-- **Para gravar um core novo:** ligar a Tang **directamente a uma porta do PC** (num hub pode não
+- **Para gravar um core novo:** ligar o Tang **directamente a uma porta do PC** (num hub pode não
   aparecer): o Partner arranca como programador ("USB Debugger") e o Gowin Programmer ou o
   openFPGALoader funcionam como na secção 3. Para voltar a jogar, basta mudar o cabo.
-- A Tang tem de ficar mesmo sem corrente ao mudar de um para o outro: o BL616 só decide o modo ao
+- O Tang tem de ficar mesmo sem corrente ao mudar de um para o outro: o BL616 só decide o modo ao
   arrancar.
 
 ## 6. Ferramentas: os índices do navegador (opcional)

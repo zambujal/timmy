@@ -21,7 +21,7 @@ O rato USB é o rato Kempston; um comando USB (ou comando Xbox) é o joystick Ke
 As combinações com a tecla Windows (Win+J, Win+S, Win+C, Win+R, Win+'+', Win+'-') são só para a placa
 ESP32 e não fazem nada sem ela.
 
-## Botões da Tang Nano 20K
+## Botões do Tang Nano 20K
 
 - **Botão do pino 87:** NMI — abre o navegador (e, dentro dele, BREAK sai).
 - **Botão do pino 88:** cada toque passa a uma escolha (os LEDs mostram o número em binário); carregar
