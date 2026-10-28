@@ -5,8 +5,9 @@ O Timmy é um core em VHDL para a placa **Sipeed Tang Nano 20K** (FPGA Gowin GW2
 teclado USB e som pelo HDMI. Arranca como TC2048 e pelo navegador do cartão passa a **TC2068** (com a
 EXROM, os modos de ecrã do Timex: hi-colour, hi-res 512x192, e esxDOS também nesse modo), a
 **ZX Spectrum 48K / 128K** ou a **Pentagon 128/512/1024**, com **General Sound**, **TurboSound** (3 AY),
-**ULAplus**, rato Kempston, Z80 até 27 MHz e cassete TAP/TZX. (O SID está nas fontes, `core/src/sid`, porto
-CF como o ZX-TSid, mas **desligado** neste core — `SID := false` no `top.vhd`, por falta de BSRAM.)
+**ULAplus**, rato Kempston e Z80 até 27 MHz. (O SID está nas fontes, `core/src/sid`, porto CF como o
+ZX-TSid, mas **desligado** neste core — `SID := false` no `top.vhd`, por falta de BSRAM. O `cassete.vhd` é o
+leitor de cassete que a placa ESP alimenta: sem ela não há cassete, e os TAP carregam pelo plugin do esxDOS.)
 
 Precisa só do Tang Nano 20K, de um cartão microSD e de um teclado USB. (Há à parte uma placa com um
 ESP32-S3 que dá menu com capas, rede, NAS, MP3 e mais; é outro projecto, depende deste e não é preciso
@@ -148,7 +149,7 @@ por isso é provável que precise de adaptações.
   vermelha; corrige-se o cartão e ele tenta sozinho de 2 em 2 s.
 - **Os dois botões do Tang:**
   - o do **pino 87** é o **NMI**: abre o navegador do cartão. Nele: ENTER num ficheiro carrega-o
-    (TAP, TZX, SNA, Z80, TRD, PT3 e outros formatos AY, MOD no General Sound); o menu das máquinas
+    (TAP, SNA, Z80, TRD, PT3 e outros formatos AY, MOD no General Sound; TZX não, só com a placa ESP); o menu das máquinas
     muda para 48K / 128K / Timex 128 / TC2068 / Pentagon e liga o General Sound e o TurboSound. As
     teclas estão em `docs/teclas.md`.
   - o do **pino 88** anda numa lista de 16 escolhas, mostrada em binário nos 4 LEDs (que ficam acesos
