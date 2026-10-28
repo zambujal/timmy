@@ -24,20 +24,26 @@ o esxDOS, que cada um mete lá (ver "O cartão").
 - **Cabo HDMI** para uma TV ou monitor que aceite 720p a 50 Hz.
 - No PC: o **Gowin EDA** (gratuito, versão *Education*, Windows ou Linux) só para o **Programmer**, ou o
   **openFPGALoader** em Linux.
-- Dois ficheiros com direitos que não estão aqui:
+- Três coisas de outros que não estão aqui:
   - a **ROM do TC2048** (16384 bytes) — ou a do ZX Spectrum 48K, que também serve;
-  - o **esxDOS** (www.esxdos.org): o pacote traz a pasta `BIN`, a pasta `SYS` e o ficheiro `ESXMMC.BIN`.
+  - o **esxDOS** (www.esxdos.org): o pacote traz a pasta `BIN`, a pasta `SYS` e o ficheiro `ESXMMC.BIN`;
+  - os **plugins do navegador do Bob Fossil** (TAP, Z80, SNA, TRD, PT3…), a pasta `BIN/BPLUGINS`. O
+    esxDOS **não os traz**; vêm no zip do navegador dele, em http://www.thefossilrecord.co.uk
+    (`BROWSE_latest.zip`). O nosso navegador foi feito em cima do dele e corre os jogos por estes
+    plugins: sem eles não abre nada, e os índices ficam vazios.
 
 ## 2. O cartão
 
 1. Formatar em FAT32.
 2. Copiar do pacote do esxDOS as pastas **`BIN`**, **`SYS`** e **`TMP`** para a raiz do cartão.
-3. Copiar para cima destas a pasta **`cartao/`** deste repositório (o `BIN` e o `SYS` daqui juntam-se aos do
+3. Do zip do navegador do Bob Fossil copiar **só a pasta `BIN/BPLUGINS`** para dentro do `BIN` do cartão
+   (o `BROWSE.BIN` dele não: o nosso vem a seguir).
+4. Copiar para cima destas a pasta **`cartao/`** deste repositório (o `BIN` e o `SYS` daqui juntam-se aos do
    esxDOS: navegador, GO128/GO256/GO1024/GO2068, PENTA, plugin MOD, música de arranque).
-4. Criar a pasta **`SYS/ROMS`** e meter lá:
+5. Criar a pasta **`SYS/ROMS`** e meter lá:
    - `TC2048.ROM` — a ROM (16384 bytes);
    - `ESXMMC.BIN` — o esxDOS, tal como vem no pacote (8192 bytes).
-5. Opcional, só para as outras máquinas e placas (também têm direitos, não estão aqui):
+6. Opcional, só para as outras máquinas e placas (também têm direitos, não estão aqui):
    - `BIN/128.rom` — a ROM do ZX Spectrum 128 (32768 bytes: ROM 0 + ROM 1), para o modo 128K e o
      Pentagon;
    - `BIN/2068.rom` — a do Timex TC2068 para o modo TC2068: ROM home de 16K + EXROM de 8K (24576
@@ -47,16 +53,16 @@ o esxDOS, que cada um mete lá (ver "O cartão").
    - `BIN/PLUG2068/TAP` — plugin TAP para o TC2068, feito a partir do plugin TAP do esxDOS com
      `python3 fontes/plug2068/faz_plug2068.py BIN/BPLUGINS/TAP BIN/PLUG2068/TAP`.
    Sem eles o Timmy é um TC2048 com esxDOS; o navegador avisa quando falta um.
-6. Os jogos vão em pastas na raiz (por exemplo `JOGOS/`, ou uma por letra).
-7. **No fim, com o cartão no PC, corre o `ferramentas/cartao.py`** (secção 6): faz os índices que dão
+7. Os jogos vão em pastas na raiz (por exemplo `JOGOS/`, ou uma por letra).
+8. **No fim, com o cartão no PC, corre o `ferramentas/cartao.py`** (secção 6): faz os índices que dão
    ao navegador os nomes compridos, a coluna das letras e a barra de cima com o menu das máquinas. Sem
    eles o navegador funciona, mas incompleto.
 
 Resumindo, a raiz do cartão fica assim:
 
 ```
-BIN/        esxDOS + os nossos (BROWSE.BIN, NAVHR.BIN, GO128, GO256, GO1024, GO2068, PENTA.BIN, NAVPT3.BIN,
-            SOMNAV.BIN, BPLUGINS/MOD, BPLUGINS/CFG/MOD.CFG e MOD.INI)
+BIN/        esxDOS + BPLUGINS/ do Bob Fossil (TAP, Z80, SNA, TRD, PT3...) + os nossos (BROWSE.BIN, NAVHR.BIN,
+            GO128, GO256, GO1024, GO2068, PENTA.BIN, NAVPT3.BIN, SOMNAV.BIN, BPLUGINS/MOD, BPLUGINS/CFG/MOD.CFG e MOD.INI)
             (opcionais: 128.rom, 2068.rom, GS105B.ROM, PLUG2068/TAP)
 SYS/        esxDOS + NAV.SOM + ROMS/TC2048.ROM + ROMS/ESXMMC.BIN
 TMP/        esxDOS
@@ -222,6 +228,9 @@ Precisa só de Python 3.
    - Linux: `python3 ferramentas/cartao.py /run/media/$USER/NOME_DO_CARTAO`
    - Windows: `python ferramentas\cartao.py E:\` (a letra do cartão)
 3. Se estiver bem, o mesmo comando com `--fazer` no fim.
+   O `cartao.py` começa por dizer `plugins em .../BIN/BPLUGINS: ...`: só entram no índice os ficheiros
+   que o navegador consegue correr (os que têm plugin). Se só aparecer `MOD` e quase tudo ficar
+   "sem plugin, fora", falta a pasta `BIN/BPLUGINS` do Bob Fossil (secção 2, passo 3).
 
 Pode-se repetir sempre que se juntam jogos (ele refaz os índices). Sem índices tudo funciona na mesma,
 só com os nomes curtos e mais devagar nas pastas muito grandes.
@@ -235,6 +244,7 @@ stub do TAP do 2068). Montam-se com o **sjasmplus**.
 - Gowin EDA (Education) e Gowin Programmer: https://www.gowinsemi.com/en/support/download_eda/
 - openFPGALoader: https://github.com/trabucayre/openFPGALoader
 - esxDOS: https://www.esxdos.org
+- Navegador e plugins do Bob Fossil (BPLUGINS), de que o nosso navegador partiu: http://www.thefossilrecord.co.uk
 - FPGA Companion / Partner para o BL616 (teclado, rato, comando): https://github.com/MiSTle-Dev/FPGA-Companion
 - Ferramentas de gravar o BL616 (BLDevCube, BLFlashCommand), Bouffalo Lab: https://dev.bouffalolab.com
 - Firmware do General Sound (fontes): https://github.com/psbhlw/gs-firmware
@@ -256,5 +266,5 @@ T80 (Daniel Wallner, Sorgelig), YM2149 (MikeJ), General Sound, SID, sysctrl e mc
 MiSTeryNano, GPL), DivTIESUS e ULAplus (Miguel Angel Rodríguez Jodar / ZX-UNO, GPL v3), o leitor
 PT3 (S. V. Bulba), e o GO128 baseado no LOADROM do DivTIESUS (GPL v3).
 
-Não estão aqui, por terem direitos: as ROMs (Timex / Sinclair / Amstrad), o esxDOS e os seus
-plugins (www.esxdos.org), o firmware do BL616.
+Não estão aqui, por terem direitos ou serem de outros: as ROMs (Timex / Sinclair / Amstrad), o esxDOS
+(www.esxdos.org), os plugins do navegador do Bob Fossil (www.thefossilrecord.co.uk), o firmware do BL616.
