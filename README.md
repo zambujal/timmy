@@ -1,5 +1,7 @@
 # Timmy — Timex TC2068 e TC2048 (e mais) num Tang Nano 20K
 
+*In English: [README.en.md](README.en.md)*
+
 O Timmy é um core em VHDL para a placa **Sipeed Tang Nano 20K** (FPGA Gowin GW2AR-18) que faz de
 **Timex TC2068** e **TC2048**, com saída **HDMI 720p50**, cartão **microSD** com **esxDOS** (DivMMC),
 teclado USB e som pelo HDMI. Arranca como TC2048 e pelo navegador do cartão passa a **TC2068** (com a
