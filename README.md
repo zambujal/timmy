@@ -124,27 +124,61 @@ por isso é provável que precise de adaptações.
   o menu das máquinas muda para 48K / 128K / Timex 128 / TC2068 / Pentagon e liga o General Sound e o
   TurboSound. As teclas estão em `docs/teclas.md`.
 
-## 5. O teclado USB (firmware do BL616)
+## 5. O teclado USB, o rato e o comando (firmware do BL616)
 
-A Tang Nano 20K tem um chip BL616 que de fábrica é o programador da FPGA. Para o teclado USB falar com o
-core, o BL616 tem de ter o firmware **FPGA Companion** (de Till Harbaum / MiSTle-Dev,
-github.com/MiSTle-Dev/FPGA-Companion), que vem com o **FPGA Partner**: com o Partner, a placa arranca como
-programador se estiver ligada a um PC e como teclado se não estiver, sem andar a trocar firmware.
+A Tang Nano 20K tem um chip **BL616** que de fábrica é só o programador da FPGA. Para o teclado USB,
+o rato (Kempston) e o comando (joystick Kempston) chegarem ao core, o BL616 tem de ter o firmware
+**FPGA Companion**, de Till Harbaum (github.com/MiSTle-Dev/FPGA-Companion), que vem acompanhado do
+**FPGA Partner**: com o Partner, a placa arranca como programador se ao ligar estiver num PC e como
+teclado se não estiver. Grava-se uma vez e não se volta a mexer.
 
-Gravar o firmware do BL616 é por conta e risco de cada um: as placas feitas a partir do início de 2024
-são "cifradas" e só aceitam firmware cifrado; um firmware errado deixa a placa sem programador até se
-voltar a gravar o de fábrica (que também está nos releases do FPGA-Companion). Passos, com o
-**BLDevCube** (Windows) ou o **BLFlashCommand** (Linux) do Bouffalo Lab:
+**Atenção:** as placas feitas a partir do início de 2024 são "cifradas" e só aceitam firmware cifrado
+(o dos releases recentes do FPGA-Companion é esse). Com um firmware errado a placa deixa de aparecer
+no USB até se gravar outro; o firmware de fábrica ("Friend 20K", nas duas versões, normal e cifrada)
+está no repositório do FPGA-Companion e grava-se da mesma maneira. Ninguém fica com a placa estragada,
+mas é por conta e risco de cada um.
 
-1. Ligar a Tang ao PC **com o botão UPDATE carregado** (está ao lado do HDMI). Aparece uma porta série
-   "Bouffalo CDC DEMO".
-2. Gravar `bl616_fpga_partner_nano20k.bin` no endereço `0x000000` e `fpga_companion_nano20k.bin` no
-   `0x40000` (o `flash_nano20k.ini` do pacote do FPGA-Companion faz as duas).
-3. Desligar e ligar. Com um PC ligado directamente (sem hub) é programador ("USB Debugger"); com o
-   teclado num adaptador OTG ou hub alimentado, é teclado.
+### 5.1 O que descarregar
 
-Nota: com o Partner, se a placa estiver ligada ao PC através de um hub USB, pode não aparecer como
-programador — ligar directamente.
+- Do release do FPGA-Companion para a Tang Nano 20K: `bl616_fpga_partner_nano20k.bin`,
+  `fpga_companion_nano20k.bin` e o `flash_nano20k.ini` (grava os dois: o Partner em `0x000000` e o
+  Companion em `0x40000`).
+- A ferramenta de gravar da Bouffalo Lab: em Windows o **BLDevCube** (programa gráfico); em Linux o
+  **BLFlashCommand**, que vem no mesmo pacote "Bouffalo Flash Cube" / no Bouffalo SDK
+  (`tools/bflb_tools/bouffalo_flash_cube/`).
+
+### 5.2 Pôr o BL616 em modo de gravação
+
+Com a Tang **desligada**, carregar no botão **UPDATE** (o que está ao lado do HDMI) e, sem o largar,
+ligar o USB ao PC. Aparece uma porta série nova, "Bouffalo CDC DEMO": em Windows uma `COMx`, em
+Linux `/dev/ttyACM0` (ou outro número; `ls /dev/ttyACM*`). Pode-se largar o botão.
+
+### 5.3 Gravar
+
+**Linux**, na pasta com os três ficheiros:
+
+```
+sudo ./BLFlashCommand --interface=uart --baudrate=2000000 --port=/dev/ttyACM0 --chipname=bl616 --cpu_id= --config=flash_nano20k.ini
+```
+
+No fim diz "All programming completed successfully".
+
+**Windows**, no BLDevCube: escolher o chip **BL616/618**; em *Single download option* pôr o
+`bl616_fpga_partner_nano20k.bin` no endereço `0x0`; escolher a `COMx` da placa e *Create & Download*.
+Repetir com o `fpga_companion_nano20k.bin` no endereço `0x40000`. (Ou importar o `flash_nano20k.ini`,
+que já tem os dois.)
+
+### 5.4 Usar
+
+- Desligar e voltar a ligar a Tang (sem o UPDATE).
+- **Para jogar:** o teclado (ou um hub com teclado, rato e comando) ligado ao USB-C da Tang por um
+  adaptador OTG; a alimentação vem pelo hub (se for alimentado) ou por um carregador num hub com
+  entrada de energia. O core vê o teclado, o rato e o comando.
+- **Para gravar um core novo:** ligar a Tang **directamente a uma porta do PC** (num hub pode não
+  aparecer): o Partner arranca como programador ("USB Debugger") e o Gowin Programmer ou o
+  openFPGALoader funcionam como na secção 3. Para voltar a jogar, basta mudar o cabo.
+- A Tang tem de ficar mesmo sem corrente ao mudar de um para o outro: o BL616 só decide o modo ao
+  arrancar.
 
 ## 6. Ferramentas
 
