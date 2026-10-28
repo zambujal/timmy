@@ -198,10 +198,13 @@ que já tem os dois.)
 
 ## 6. Ferramentas: os índices do navegador (opcional)
 
-Numa pasta com milhares de jogos o navegador demora a ler a pasta de cada vez. O `ferramentas/cartao.py`
-faz, no PC, índices que o tornam instantâneo, e de caminho arruma a colecção: mete a máquina no nome
-de cada ficheiro (`[48K]`, `[128K]`…), separa por letra e título, e escreve os índices em `_NAV/*.IDX`
-em cada pasta. Precisa só de Python 3.
+Sem índices, o navegador lê cada pasta pelo esxDOS: funciona, mas os nomes aparecem curtos, em 8.3
+(`JETSETW~1.TAP`), e uma pasta com milhares de ficheiros demora a abrir. Os **índices** são ficheiros
+`_NAV/*.IDX` que o `ferramentas/cartao.py` escreve em cada pasta, no PC, com o nome comprido de cada
+jogo, o nome 8.3 e a máquina; com eles o navegador mostra os nomes inteiros, a máquina (`[48K]`,
+`[128K]`…), as letras na coluna da esquerda, e abre qualquer pasta num instante. De caminho o
+`cartao.py` arruma a colecção: separa por letra e título e mete a máquina no nome dos ficheiros.
+Precisa só de Python 3.
 
 1. No `ferramentas/config.ini`, em `jogos = ...`, põe os nomes das pastas da raiz do cartão que ele
    deve tratar (separadas por espaços); em `[pastas]` as que aparecem na barra de baixo do navegador.
@@ -211,8 +214,8 @@ em cada pasta. Precisa só de Python 3.
    - Windows: `python ferramentas\cartao.py E:\` (a letra do cartão)
 3. Se estiver bem, o mesmo comando com `--fazer` no fim.
 
-Pode-se repetir sempre que se juntam jogos. Sem índices tudo funciona na mesma: o navegador mostra a
-pasta tal como o esxDOS a lê, só mais devagar nas muito grandes.
+Pode-se repetir sempre que se juntam jogos (ele refaz os índices). Sem índices tudo funciona na mesma,
+só com os nomes curtos e mais devagar nas pastas muito grandes.
 
 `fontes/` tem o código de tudo o que vai no cartão (navegador, GO*, PENTA, SOMNAV, NAVPT3, plugin MOD,
 stub do TAP do 2068). Montam-se com o **sjasmplus**.
