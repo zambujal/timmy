@@ -1,10 +1,11 @@
-# Timmy — Timex TC2048 (e mais) numa Tang Nano 20K
+# Timmy — Timex TC2068 e TC2048 (e mais) numa Tang Nano 20K
 
 O Timmy é um core em VHDL para a placa **Sipeed Tang Nano 20K** (FPGA Gowin GW2AR-18) que faz de
-Timex TC2048, com saída **HDMI 720p50**, cartão **microSD** com **esxDOS** (DivMMC), teclado USB e
-som pelo HDMI. Pelo navegador que vem no cartão muda-se para **ZX Spectrum 48K / 128K**, **Timex
-TC2068** e **Pentagon 128/512/1024**, com **General Sound**, **TurboSound** (3 AY), **SID**, **ULAplus**,
-rato Kempston, Z80 até 27 MHz e cassete TAP/TZX.
+**Timex TC2068** e **TC2048**, com saída **HDMI 720p50**, cartão **microSD** com **esxDOS** (DivMMC),
+teclado USB e som pelo HDMI. Arranca como TC2048 e pelo navegador do cartão passa a **TC2068** (com a
+EXROM, os modos de ecrã do Timex: hi-colour, hi-res 512x192, e esxDOS também nesse modo), a
+**ZX Spectrum 48K / 128K** ou a **Pentagon 128/512/1024**, com **General Sound**, **TurboSound** (3 AY),
+**SID**, **ULAplus**, rato Kempston, Z80 até 27 MHz e cassete TAP/TZX.
 
 Precisa só da Tang Nano 20K, de um cartão microSD e de um teclado USB. (Há à parte uma placa com um
 ESP32-S3 que dá menu com capas, rede, MP3 e mais; esse projecto depende deste e não é preciso para nada
