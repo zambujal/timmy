@@ -18,5 +18,7 @@ ficheiro de outros autores mantém o seu cabeçalho e a sua licença:
 | `core/arranque_teste/` | usa o z80emu de Lin Ke-Fong (não incluído) | a do z80emu |
 | o resto (core_timmy, top, vídeo/HDMI, cassete, som, ponte, arranque e letras, NAV, GO2068, PENTA, SOMNAV, MOD, stub68, cartao.py) | António Vitor | GPL v3 |
 
+Código escrito com ajuda de IA.
+
 Não incluído, por ter direitos: as ROMs do Timex / Sinclair, o esxDOS e os seus plugins (Bob Fossil),
 o firmware FPGA-Companion / Partner do BL616.

@@ -290,6 +290,8 @@ Own code (GPL v3): the core `core_timmy.vhd` and `top.vhd`, the video and HDMI (
 `tmds_enc`), the tape, the sound, the card bridge, the boot program and its font, the browser (`fontes/nav`,
 with its own font) and the other card programs, `cartao.py`.
 
+Code written with the help of AI.
+
 Code by others, each under its own licence (see `LICENCAS.md`):
 SCLD (Load ZX Museum, Álvaro Lopes, Paulo Cortesão, CC BY-SA 4.0), T80 (Daniel Wallner, Sorgelig),
 YM2149 (MikeJ), General Sound, SID, sysctrl and mcu_spi (MiSTer / MiSTeryNano, GPL), DivTIESUS and

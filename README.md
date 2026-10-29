@@ -293,6 +293,8 @@ Código próprio (GPL v3): o core `core_timmy.vhd` e o `top.vhd`, o vídeo e o H
 `hdmi_tx`, `tmds_enc`), a cassete, o som, a ponte do cartão, o programa de arranque e a sua letra, o
 navegador (`fontes/nav`, com letra própria) e os restantes programas do cartão, o `cartao.py`.
 
+Código escrito com ajuda de IA.
+
 Código de outros, cada um com a sua licença (ver `LICENCAS.md`):
 SCLD (Load ZX Museum, Álvaro Lopes, Paulo Cortesão, CC BY-SA 4.0), T80 (Daniel Wallner, Sorgelig),
 YM2149 (MikeJ), General Sound, SID, sysctrl e mcu_spi (MiSTer / MiSTeryNano, GPL), DivTIESUS e
