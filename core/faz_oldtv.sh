@@ -16,6 +16,9 @@ sed -i 's/MODO720 : boolean := true/MODO720 : boolean := false/' "$T/src/top.vhd
 # o HDMI da hdl-util (o do NanoMig do djnice) em vez do src/hdmi_tx.vhd
 sed -i 's#^add_file src/hdmi_tx.vhd$#add_file oldtv/hdmi_oldtv.v\nadd_file oldtv/hdmi_tx_oldtv.vhd#' "$T/timmy.tcl"
 grep -q "oldtv/hdmi_tx_oldtv.vhd" "$T/timmy.tcl" || { echo "nao consegui trocar o hdmi_tx no timmy.tcl"; exit 1; }
+# os tempos do HDMI a 576p: serializador 27 x 5 = 135 MHz, ponto 27 MHz (o timmy.sdc tem os do 720p, 27 x 55 / 4)
+sed -i 's#-multiply_by 55 -divide_by 4 \[get_pins {pll/CLKOUT}\]#-multiply_by 5 [get_pins {pll/CLKOUT}]#' "$T/timmy.sdc"
+grep -q -- "-multiply_by 5 \[get_pins {pll/CLKOUT}\]" "$T/timmy.sdc" || { echo "nao consegui mudar o timmy.sdc"; exit 1; }
 grep -q "MODO720 : boolean := false" "$T/src/top.vhd" || { echo "nao consegui mudar o MODO720 no top.vhd"; exit 1; }
 cd "$T"
 LD_LIBRARY_PATH="$G/lib" QT_QPA_PLATFORM=offscreen "$G/bin/gw_sh" timmy.tcl 2>&1 | tail -3 || true
