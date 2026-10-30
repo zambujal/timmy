@@ -17,6 +17,7 @@ ficheiro de outros autores mantém o seu cabeçalho e a sua licença:
 | `fontes/navpt3/navpt3.asm` | contém o Universal PT2/PT3/TS player de S. V. Bulba | livre, com o crédito |
 | `core/arranque_teste/` | usa o z80emu de Lin Ke-Fong (não incluído) | a do z80emu |
 | o resto (core_timmy, top, vídeo/HDMI, cassete, som, ponte, arranque e letras, NAV, GO2068, PENTA, SOMNAV, MOD, stub68, cartao.py) | António Vitor | GPL v3 |
+| `core/oldtv/hdl-util/*.sv`, `core/oldtv/hdmi_oldtv.sv` / `.v` (só na variante Timmy old TV) | hdl-util/hdmi, Sameer Puri (versão do NanoMig do djnice), adaptado para o Timmy | MIT (ou Apache-2.0) |
 
 Código escrito com ajuda de IA.
 

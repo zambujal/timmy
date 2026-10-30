@@ -134,6 +134,12 @@ e faz o mesmo que em Windows.
 
 ### 3.4 Compilar o core (opcional)
 
+**TV antiga sem som?** Há TVs LCD antigas (2005 ou antes) que dão imagem mas não som com este core. Para essas há
+a variante **Timmy old TV**: 576p50 (4:3) e o HDMI da biblioteca hdl-util (o do NanoMig do djnice, que dá som
+nessas TVs). Na pasta `core/`, `./faz_oldtv.sh` dá o `core/timmy_oldtv.fs` (ver `core/oldtv/LEIAME.md`).
+O menu do ESP não fica bem a 576p.
+
+
 Com o Gowin EDA (1.9.11 ou mais recente; a versão Education chega), na pasta `core/`:
 
 ```

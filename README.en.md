@@ -134,6 +134,12 @@ same as on Windows.
 
 ### 3.4 Building the core (optional)
 
+**Old TV without sound?** Some old LCD TVs (2005 or earlier) give picture but no sound with this core. For those
+there is the **Timmy old TV** variant: 576p50 (4:3) and the HDMI of the hdl-util library (the one in djnice's
+NanoMig, which has sound on such a TV). In the `core/` folder, `./faz_oldtv.sh` gives `core/timmy_oldtv.fs`
+(see `core/oldtv/LEIAME.md`). The ESP menu does not look right at 576p.
+
+
 With Gowin EDA (1.9.11 or newer; the Education edition is enough), in the `core/` folder:
 
 ```
