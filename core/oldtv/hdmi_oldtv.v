@@ -779,43 +779,59 @@ module tmds_channel (
 	wire [9:0] video_coding;
 	assign video_coding = q_out;
 	reg [3:0] N1D;
+	reg signed [4:0] N1c;
 	reg signed [4:0] N1q_m07;
-	reg signed [4:0] N0q_m07;
+	wire signed [4:0] N0q_m07;
+	reg [8:0] q_mc;
 	always @(*) begin
 		if (_sv2v_0)
 			;
 		N1D = ((((((video_data[0] + video_data[1]) + video_data[2]) + video_data[3]) + video_data[4]) + video_data[5]) + video_data[6]) + video_data[7];
-		case (((((((q_m[0] + q_m[1]) + q_m[2]) + q_m[3]) + q_m[4]) + q_m[5]) + q_m[6]) + q_m[7])
-			4'b0000: N1q_m07 = 5'sd0;
-			4'b0001: N1q_m07 = 5'sd1;
-			4'b0010: N1q_m07 = 5'sd2;
-			4'b0011: N1q_m07 = 5'sd3;
-			4'b0100: N1q_m07 = 5'sd4;
-			4'b0101: N1q_m07 = 5'sd5;
-			4'b0110: N1q_m07 = 5'sd6;
-			4'b0111: N1q_m07 = 5'sd7;
-			4'b1000: N1q_m07 = 5'sd8;
-			default: N1q_m07 = 5'sd0;
+		case (((((((q_mc[0] + q_mc[1]) + q_mc[2]) + q_mc[3]) + q_mc[4]) + q_mc[5]) + q_mc[6]) + q_mc[7])
+			4'b0000: N1c = 5'sd0;
+			4'b0001: N1c = 5'sd1;
+			4'b0010: N1c = 5'sd2;
+			4'b0011: N1c = 5'sd3;
+			4'b0100: N1c = 5'sd4;
+			4'b0101: N1c = 5'sd5;
+			4'b0110: N1c = 5'sd6;
+			4'b0111: N1c = 5'sd7;
+			4'b1000: N1c = 5'sd8;
+			default: N1c = 5'sd0;
 		endcase
-		N0q_m07 = 5'sd8 - N1q_m07;
 	end
+	assign N0q_m07 = 5'sd8 - N1q_m07;
 	reg signed [4:0] acc_add;
 	integer i;
 	always @(*) begin
 		if (_sv2v_0)
 			;
 		if ((N1D > 4'd4) || ((N1D == 4'd4) && (video_data[0] == 1'd0))) begin
-			q_m[0] = video_data[0];
+			q_mc[0] = video_data[0];
 			for (i = 0; i < 7; i = i + 1)
-				q_m[i + 1] = q_m[i] ~^ video_data[i + 1];
-			q_m[8] = 1'b0;
+				q_mc[i + 1] = q_mc[i] ~^ video_data[i + 1];
+			q_mc[8] = 1'b0;
 		end
 		else begin
-			q_m[0] = video_data[0];
+			q_mc[0] = video_data[0];
 			for (i = 0; i < 7; i = i + 1)
-				q_m[i + 1] = q_m[i] ^ video_data[i + 1];
-			q_m[8] = 1'b1;
+				q_mc[i + 1] = q_mc[i] ^ video_data[i + 1];
+			q_mc[8] = 1'b1;
 		end
+	end
+	reg [2:0] mode_r = 3'd0;
+	reg [1:0] control_data_r = 2'd0;
+	reg [3:0] data_island_data_r = 4'd0;
+	always @(posedge clk_pixel) begin
+		q_m <= q_mc;
+		N1q_m07 <= N1c;
+		mode_r <= mode;
+		control_data_r <= control_data;
+		data_island_data_r <= data_island_data;
+	end
+	always @(*) begin
+		if (_sv2v_0)
+			;
 		if ((acc == 5'sd0) || (N1q_m07 == N0q_m07)) begin
 			if (q_m[8]) begin
 				acc_add = N1q_m07 - N0q_m07;
@@ -835,13 +851,13 @@ module tmds_channel (
 			acc_add = (N1q_m07 - N0q_m07) - (~q_m[8] ? 5'sd2 : 5'sd0);
 		end
 	end
-	always @(posedge clk_pixel) acc <= (mode != 3'd1 ? 5'sd0 : acc + acc_add);
+	always @(posedge clk_pixel) acc <= (mode_r != 3'd1 ? 5'sd0 : acc + acc_add);
 	reg [9:0] control_coding;
 	always @(*) begin
 		if (_sv2v_0)
 			;
 		(* full_case, parallel_case *)
-		case (control_data)
+		case (control_data_r)
 			2'b00: control_coding = 10'b1101010100;
 			2'b01: control_coding = 10'b0010101011;
 			2'b10: control_coding = 10'b0101010100;
@@ -853,7 +869,7 @@ module tmds_channel (
 		if (_sv2v_0)
 			;
 		(* full_case, parallel_case *)
-		case (data_island_data)
+		case (data_island_data_r)
 			4'b0000: terc4_coding = 10'b1010011100;
 			4'b0001: terc4_coding = 10'b1001100011;
 			4'b0010: terc4_coding = 10'b1011100100;
@@ -887,11 +903,11 @@ module tmds_channel (
 			assign data_guard_band = 10'b0100110011;
 		end
 		else begin : genblk2
-			assign data_guard_band = (control_data == 2'b00 ? 10'b1010001110 : (control_data == 2'b01 ? 10'b1001110001 : (control_data == 2'b10 ? 10'b0101100011 : 10'b1011000011)));
+			assign data_guard_band = (control_data_r == 2'b00 ? 10'b1010001110 : (control_data_r == 2'b01 ? 10'b1001110001 : (control_data_r == 2'b10 ? 10'b0101100011 : 10'b1011000011)));
 		end
 	endgenerate
 	always @(posedge clk_pixel)
-		case (mode)
+		case (mode_r)
 			3'd0: tmds <= control_coding;
 			3'd1: tmds <= video_coding;
 			3'd2: tmds <= video_guard_band;
