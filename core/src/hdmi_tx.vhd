@@ -32,6 +32,7 @@ architecture rtl of hdmi_tx is
   constant D_ATR : integer := 12;
   constant N_ACR : integer := 6144;                 -- 48 kHz
   constant CTS   : integer := FREQ / 1000;          -- FREQ * N / (128 * 48000)
+  constant CS_BITS : std_logic_vector(39 downto 0) := x"C202004004";   -- (62) estado do canal, bit 0 primeiro
 
   type sv_arr is array (natural range <>) of std_logic_vector(7 downto 0);
 
@@ -248,7 +249,9 @@ begin
             if j < am_n then
               hb(1)(j) := '1';
               if fq = 0 then hb(2)(4 + j) := '1'; end if;
-              cb := '1' when fq = 25 else '0';              -- estado do canal: 48 kHz (bit 25)
+              -- estado do canal IEC 60958 igual ao do NextNano (C202004004h): bit 2 = copia permitida,
+              -- categoria 40h, 48 kHz (bits 24-27 = 0010), 16 bits (32-35 = 0010), fs original 48 kHz (36-39)
+              if fq < 40 then cb := CS_BITS(fq); else cb := '0'; end if;
               smp := am_buf(j)(15 downto 0) & x"00";
               smpr := am_buf(j)(31 downto 16) & x"00";
               pb(j*7 + 0) := smp(7 downto 0);   pb(j*7 + 1) := smp(15 downto 8);  pb(j*7 + 2) := smp(23 downto 16);
