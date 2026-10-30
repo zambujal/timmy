@@ -29,6 +29,7 @@ cd "$T"
 LD_LIBRARY_PATH="$G/lib" QT_QPA_PLATFORM=offscreen "$G/bin/gw_sh" timmy.tcl 2>&1 | tail -3 || true
 F="$(ls "$T"/impl/pnr/*.fs 2>/dev/null | head -1)"
 [ -n "$F" ] || { echo "a compilacao nao deu .fs (ver $T/impl)"; exit 1; }
+rm -f "$AQUI/$NOME.fs" "$AQUI/$NOME.tr"   # o Gowin grava o .fs so' de leitura
 cp "$F" "$AQUI/$NOME.fs"
 cp "$T"/impl/pnr/*.tr "$AQUI/$NOME.tr" 2>/dev/null || true   # o relatorio de tempos, para ver os caminhos
 grep -A16 "Total Negative Slack Summary" "$T"/impl/pnr/*.tr | grep -E "pclk|sclk" || true
