@@ -40,7 +40,10 @@ entity video_timex is
     -- ULAplus: indice da paleta (FB0III tinta, FB1PPP papel, 001BBB borda) e a cor GGGRRRBB
     ulap   : in  std_logic := '0';
     pal_a  : out std_logic_vector(5 downto 0);
-    pal_q  : in  std_logic_vector(7 downto 0) := (others => '0')
+    pal_q  : in  std_logic_vector(7 downto 0) := (others => '0');
+    -- (core 62) modo TC2068: o preto com BRIGHT 1 sai cinzento escuro, como no 2068 verdadeiro
+    --   (no Spectrum e no TC2048 fica preto)
+    m2068  : in  std_logic := '0'
   );
 end entity;
 
@@ -71,6 +74,8 @@ architecture rtl of video_timex is
   signal nb0, nb1, cb0, cb1 : std_logic_vector(7 downto 0) := (others => '0');
   signal nb2, nb3, cb2, cb3 : std_logic_vector(7 downto 0) := (others => '0');
   signal va2_r : std_logic_vector(13 downto 0) := (others => '0');
+
+  constant PRETO_BR : std_logic_vector(7 downto 0) := x"3C";   -- preto + BRIGHT no TC2068 (a afinar)
 
   function nivel(aceso : std_logic; br : std_logic) return std_logic_vector is
   begin
@@ -214,9 +219,13 @@ begin
         br := '0';
         pal_r <= "001" & border;                                  -- borda: entrada 8 + cor
       end if;
-      r1 <= nivel(c(1), br);
-      g1 <= nivel(c(2), br);
-      b1 <= nivel(c(0), br);
+      if c = "000" and br = '1' and m2068 = '1' then
+        r1 <= PRETO_BR; g1 <= PRETO_BR; b1 <= PRETO_BR;
+      else
+        r1 <= nivel(c(1), br);
+        g1 <= nivel(c(2), br);
+        b1 <= nivel(c(0), br);
+      end if;
       if hc < H_ACT and vc < V_ACT then de1 <= '1'; else de1 <= '0'; end if;
       if hc >= HS0 and hc < HS0 + H_SY then hs1 <= pol('1'); else hs1 <= pol('0'); end if;
       vs1 <= pol(vsy);

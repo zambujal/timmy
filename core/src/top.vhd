@@ -297,7 +297,8 @@ begin
       SYNC_POS => MODO720 and not MODO480)
     port map (clk => pclk, border => border, r => rv, g => gv, b => bv, de => dev, hs => hsv, vs => vsv,
               modo => modo, hcor => hcor, va => va, vq => vq, sinc => fsinc and to_std(PENTA50),
-              ulap => ulap_v, pal_a => pal_ra, pal_q => pal_rq, m16c => m16c_v, va2 => va2, vq2 => vq2);
+              ulap => ulap_v, pal_a => pal_ra, pal_q => pal_rq, m16c => m16c_v, va2 => va2, vq2 => vq2,
+              m2068 => maq_st(9));   -- (62) bit 9 = modo TC2068 (quase estatico; passa de relogio sem mal)
   -- paleta da ULAplus em LUTs (2026-10-22: o bloco de BSRAM ficou para o buffer de linhas da camada do ESP)
   pal: entity work.ram_lut generic map (AW => 6)
     port map (clk => clk54, a => pal_wa, we => pal_we, d => pal_wd, q => pal_wq,
