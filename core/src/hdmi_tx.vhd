@@ -135,7 +135,7 @@ architecture rtl of hdmi_tx is
     variable pb : sv_arr(0 to 27) := (others => x"00");
     variable hb : sv_arr(0 to 2) := (x"84", x"01", x"0A");
   begin
-    pb(1) := x"11";                                         -- 2 canais, CT = 1 (PCM; era 0 = "ver o fluxo"), como o NextNano
+    pb(1) := x"01";                                         -- 2 canais, CT = 0 ("ver o fluxo"), igual ao NextNano (o comentario dele diz 11, o valor e' 01)
     pb(0) := soma(hb & pb(1 to 10));
     return pb;
   end function;
