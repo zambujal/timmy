@@ -22,6 +22,7 @@ LD_LIBRARY_PATH="$G/lib" QT_QPA_PLATFORM=offscreen "$G/bin/gw_sh" timmy.tcl 2>&1
 F="$(ls "$T"/impl/pnr/*.fs 2>/dev/null | head -1)"
 [ -n "$F" ] || { echo "a compilacao nao deu .fs (ver $T/impl)"; exit 1; }
 cp "$F" "$AQUI/timmy_oldtv.fs"
+cp "$T"/impl/pnr/*.tr "$AQUI/timmy_oldtv.tr" 2>/dev/null || true   # o relatorio de tempos, para ver os caminhos
 grep -A16 "Total Negative Slack Summary" "$T"/impl/pnr/*.tr | grep -E "pclk|sclk" || true
 rm -rf "$T"
 ls -l "$AQUI/timmy_oldtv.fs"
