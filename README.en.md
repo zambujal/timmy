@@ -134,10 +134,8 @@ same as on Windows.
 
 ### 3.4 Building the core (optional)
 
-**Old TV without sound?** Some old LCD TVs (2005 or earlier) give picture but no sound with this core. For those
-there is the **Timmy old TV** variant: 576p50 (4:3) and the HDMI of the hdl-util library (the one in djnice's
-NanoMig, which has sound on such a TV). In the `core/` folder, `./faz_oldtv.sh` gives `core/timmy_oldtv.fs`
-(see `core/oldtv/LEIAME.md`). The ESP menu does not look right at 576p.
+**TV that does not accept 720p?** In the `core/` folder, `./faz_576p.sh` gives `core/timmy_576p.fs`: the same
+core at 576p50 (4:3). The ESP menu does not look right at 576p.
 
 
 With Gowin EDA (1.9.11 or newer; the Education edition is enough), in the `core/` folder:
@@ -196,12 +194,10 @@ own risk.
 - **3921 board**: from the FPGA-Companion release for the Tang Nano 20K: `bl616_fpga_partner_nano20k.bin`,
   `fpga_companion_nano20k.bin` and `flash_nano20k.ini` (it flashes both: the Partner at `0x000000` and the
   Companion at `0x40000`).
-- **3923 board**: the 3921 Companion gives no keyboard (the BL616's SPI is on other pins). What is tested and
-  working is the one from the **NextNano** release (github.com/RetroSilicon/NextNano): the Partner
-  `bl616_fpga_partner_20kNano.bin` at `0x0` and `fpga_companion_tn20k_3923.bin` at `0x40000` — that one only,
-  never both Companions. It is the same FPGA Companion built for the 3923, and it serves Timmy, the Next and the
-  other cores. The rcdev67/FPGA-Companion fork also has an `fpga_companion_nano20k_v3923.bin`, but on a 3923
-  board it gave no keyboard — kept here as an alternative to try.
+- **3923 board**: the 3921 Companion gives no keyboard (the BL616's SPI is on other pins). From the same
+  FPGA-Companion release (since late October 2026): `bl616_fpga_partner_nano20k_v3923.bin`,
+  `fpga_companion_nano20k_v3923.bin` and `flash_nano20k_v3923.ini`. The Companion shipped with NextNano for the
+  3923 (`fpga_companion_tn20k_3923.bin`) also works. Flash only one Companion, never both.
 - There is no way to tell the version with the BL616 in flashing mode: read the number on the board, and if
   the keyboard does not show up with one Companion, flash the other — it does no harm.
 - Bouffalo Lab's flashing tool: on Windows **BLDevCube** (graphical); on Linux **BLFlashCommand**, which
@@ -283,7 +279,7 @@ plugin, 2068 TAP stub). They are assembled with **sjasmplus**.
 - esxDOS: https://www.esxdos.org
 - Bob Fossil's browser and plugins (BPLUGINS), which our browser started from: http://www.thefossilrecord.co.uk
 - FPGA Companion / Partner for the BL616 (keyboard, mouse, gamepad): https://github.com/MiSTle-Dev/FPGA-Companion
-- Companion for the 3923 board (NextNano release): https://github.com/RetroSilicon/NextNano ; fork with 3921/3923: https://github.com/rcdev67/FPGA-Companion
+- HDMI with sound: hdl-util/hdmi (Sameer Puri), https://github.com/hdl-util/hdmi , in djnice's NanoMig version: https://github.com/djnice/NanoMig
 - BL616 flashing tools (BLDevCube, BLFlashCommand), Bouffalo Lab: https://dev.bouffalolab.com
 - General Sound firmware (sources): https://github.com/psbhlw/gs-firmware
 - ZX Spectrum 48K and 128K ROMs (Amstrad allows distribution for emulation):
@@ -310,8 +306,8 @@ whether the previous instruction wrote the flags; SET/RES do not count, nor do P
 prefix counts as an instruction that does not write flags). I fixed it in the `T80.vhd` here (comments carry
 the date) and in github.com/zambujal/T80-Q-fix. It passes all the tests.
 
-Own code (GPL v3): the core `core_timmy.vhd` and `top.vhd`, the video and HDMI (`video_timex`, `hdmi_tx`,
-`tmds_enc`), the tape, the sound, the card bridge, the boot program and its font, the browser (`fontes/nav`,
+Own code (GPL v3): the core `core_timmy.vhd` and `top.vhd`, the video (`video_timex`), the glue to the HDMI
+(`src/hdmi/hdmi_hdlutil.sv`, `hdmi_tx.vhd`), the tape, the sound, the card bridge, the boot program and its font, the browser (`fontes/nav`,
 with its own font) and the other card programs, `cartao.py`.
 
 Code written with the help of AI.

@@ -1,7 +1,5 @@
--- hdmi_tx_oldtv.vhd: so' para a variante "Timmy old TV" (core/faz_oldtv.sh). Tem o mesmo nome e as mesmas
---   portas do src/hdmi_tx.vhd, por isso o top.vhd nao muda: o script troca um ficheiro pelo outro.
---   Por dentro e' o HDMI da hdl-util (oldtv/hdmi_oldtv.v), o mesmo do NanoMig do djnice que da' som
---   na TV antiga.
+-- hdmi_tx.vhd: a entidade hdmi_tx do Timmy (as mesmas portas de sempre, o top.vhd nao muda); por dentro e'
+--   o HDMI da hdl-util (hdmi_hdlutil.v, gerado com o sv2v a partir de hdmi_hdlutil.sv e hdl-util/*.sv).
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
@@ -29,7 +27,7 @@ architecture rtl of hdmi_tx is
     if VIC = 19 then return v19; elsif VIC = 1 then return v1; else return v17; end if;
   end function;
 
-  component hdmi_oldtv
+  component hdmi_hdlutil
     generic (SCREEN_W, FRAME_W, SCREEN_H, FRAME_H, CEA, VIDEO_RATE, AUDIO_RATE, AUDIO_BIT_WIDTH : integer);
     port (
       clk_pixel : in std_logic;
@@ -41,7 +39,7 @@ architecture rtl of hdmi_tx is
     );
   end component;
 begin
-  h: hdmi_oldtv
+  h: hdmi_hdlutil
     generic map (SCREEN_W => sel(720, 1280, 640), FRAME_W => sel(864, 1980, 800),
                  SCREEN_H => sel(576, 720, 480),  FRAME_H => sel(625, 750, 525),
                  CEA => VIC, VIDEO_RATE => FREQ, AUDIO_RATE => 48000, AUDIO_BIT_WIDTH => 16)

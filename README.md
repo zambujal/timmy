@@ -134,10 +134,8 @@ e faz o mesmo que em Windows.
 
 ### 3.4 Compilar o core (opcional)
 
-**TV antiga sem som?** Há TVs LCD antigas (2005 ou antes) que dão imagem mas não som com este core. Para essas há
-a variante **Timmy old TV**: 576p50 (4:3) e o HDMI da biblioteca hdl-util (o do NanoMig do djnice, que dá som
-nessas TVs). Na pasta `core/`, `./faz_oldtv.sh` dá o `core/timmy_oldtv.fs` (ver `core/oldtv/LEIAME.md`).
-O menu do ESP não fica bem a 576p.
+**TV que não aceita 720p?** Na pasta `core/`, `./faz_576p.sh` dá o `core/timmy_576p.fs`: o mesmo core a 576p50
+(4:3). O menu do ESP não fica bem a 576p.
 
 
 Com o Gowin EDA (1.9.11 ou mais recente; a versão Education chega), na pasta `core/`:
@@ -196,12 +194,10 @@ mas é por conta e risco de cada um.
 - **Placa 3921**: do release do FPGA-Companion para o Tang Nano 20K: `bl616_fpga_partner_nano20k.bin`,
   `fpga_companion_nano20k.bin` e o `flash_nano20k.ini` (grava os dois: o Partner em `0x000000` e o
   Companion em `0x40000`).
-- **Placa 3923**: o Companion da 3921 não dá teclado (o SPI do BL616 está noutros pinos). O que está
-  testado a funcionar é o do release do **NextNano** (github.com/RetroSilicon/NextNano): o Partner
-  `bl616_fpga_partner_20kNano.bin` em `0x0` e o `fpga_companion_tn20k_3923.bin` em `0x40000` — só esse,
-  nunca os dois Companions. É o mesmo FPGA Companion compilado para a 3923, e serve o Timmy, o Next e os
-  outros cores. O fork rcdev67/FPGA-Companion também tem um `fpga_companion_nano20k_v3923.bin`, mas numa
-  placa 3923 não deu teclado — fica como alternativa a experimentar.
+- **Placa 3923**: o Companion da 3921 não dá teclado (o SPI do BL616 está noutros pinos). Do mesmo release do
+  FPGA-Companion (desde o fim de Outubro de 2026): `bl616_fpga_partner_nano20k_v3923.bin`,
+  `fpga_companion_nano20k_v3923.bin` e `flash_nano20k_v3923.ini`. O Companion que vem com o NextNano para a
+  3923 (`fpga_companion_tn20k_3923.bin`) também serve. Gravar só um Companion, nunca os dois.
 - Não há maneira de ver a versão com o BL616 em modo de gravação: vê-se o número na placa, e se o teclado
   não aparecer com um Companion, grava-se o outro — não faz mal nenhum.
 - A ferramenta de gravar da Bouffalo Lab: em Windows o **BLDevCube** (programa gráfico); em Linux o
@@ -285,7 +281,7 @@ stub do TAP do 2068). Montam-se com o **sjasmplus**.
 - esxDOS: https://www.esxdos.org
 - Navegador e plugins do Bob Fossil (BPLUGINS), de que o nosso navegador partiu: http://www.thefossilrecord.co.uk
 - FPGA Companion / Partner para o BL616 (teclado, rato, comando): https://github.com/MiSTle-Dev/FPGA-Companion
-- Companion para a placa 3923 (release do NextNano): https://github.com/RetroSilicon/NextNano ; fork com 3921/3923: https://github.com/rcdev67/FPGA-Companion
+- HDMI com som: hdl-util/hdmi (Sameer Puri), https://github.com/hdl-util/hdmi , na versão do NanoMig do djnice: https://github.com/djnice/NanoMig
 - Ferramentas de gravar o BL616 (BLDevCube, BLFlashCommand), Bouffalo Lab: https://dev.bouffalolab.com
 - Firmware do General Sound (fontes): https://github.com/psbhlw/gs-firmware
 - ROMs do ZX Spectrum 48K e 128K (a Amstrad autoriza a distribuição para emulação):
@@ -312,8 +308,8 @@ instrução anterior ter escrito os flags; SET/RES não contam, POP AF e EX AF t
 conta como instrução sem flags). Corrigi-o no `T80.vhd` daqui (comentários com a data) e em
 github.com/zambujal/T80-Q-fix. Passa os testes todos.
 
-Código próprio (GPL v3): o core `core_timmy.vhd` e o `top.vhd`, o vídeo e o HDMI (`video_timex`,
-`hdmi_tx`, `tmds_enc`), a cassete, o som, a ponte do cartão, o programa de arranque e a sua letra, o
+Código próprio (GPL v3): o core `core_timmy.vhd` e o `top.vhd`, o vídeo (`video_timex`), a ligação ao
+HDMI (`src/hdmi/hdmi_hdlutil.sv`, `hdmi_tx.vhd`), a cassete, o som, a ponte do cartão, o programa de arranque e a sua letra, o
 navegador (`fontes/nav`, com letra própria) e os restantes programas do cartão, o `cartao.py`.
 
 Código escrito com ajuda de IA.

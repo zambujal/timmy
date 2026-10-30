@@ -1,7 +1,7 @@
-// hdmi_oldtv.v: GERADO com o sv2v a partir de oldtv/hdmi_oldtv.sv e oldtv/hdl-util/*.sv (hdl-util/hdmi,
-//   Sameer Puri, MIT ou Apache-2.0 - ver oldtv/hdl-util/LICENSE-*). Nao editar: editar os .sv e refazer com
-//   sv2v --top=hdmi_oldtv oldtv/hdmi_oldtv.sv oldtv/hdl-util/*.sv > oldtv/hdmi_oldtv.v
-module hdmi_oldtv (
+// hdmi_hdlutil.v: GERADO com o sv2v a partir de hdmi_hdlutil.sv e hdl-util/*.sv (hdl-util/hdmi, Sameer Puri,
+//   MIT ou Apache-2.0 - ver hdl-util/LICENSE-*). Nao editar: editar os .sv e, nesta pasta, refazer com
+//   sv2v --top=hdmi_hdlutil hdmi_hdlutil.sv hdl-util/*.sv > hdmi_hdlutil.v
+module hdmi_hdlutil (
 	clk_pixel,
 	r,
 	g,
@@ -169,7 +169,7 @@ module hdmi_oldtv (
 		.AUDIO_RATE(AUDIO_RATE),
 		.AUDIO_BIT_WIDTH(AUDIO_BIT_WIDTH),
 		.VENDOR_NAME({"Timmy", 24'd0}),
-		.PRODUCT_DESCRIPTION({"Timex old TV", 32'd0}),
+		.PRODUCT_DESCRIPTION({"Timex", 88'd0}),
 		.SOURCE_DEVICE_INFORMATION(8'h08)
 	) packet_picker(
 		.clk_pixel(clk_pixel),

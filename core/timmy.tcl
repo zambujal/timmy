@@ -15,8 +15,8 @@ add_file src/T80_MCode.vhd
 add_file src/T80_Reg.vhd
 add_file src/T80.vhd
 add_file src/T80se.vhd
-add_file src/tmds_enc.vhd
-add_file src/hdmi_tx.vhd
+add_file src/hdmi/hdmi_hdlutil.v
+add_file src/hdmi/hdmi_tx.vhd
 add_file src/camada_esp.vhd
 add_file src/som.vhd
 add_file src/i2s_rx.vhd
