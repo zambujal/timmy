@@ -3,7 +3,7 @@
 --   de cada linha, quando vem o DE (preambulo + banda de guarda do video).
 --   Em cada linha, logo no inicio do HSYNC, vai uma ilha de dados com 2 pacotes:
 --     pacote 0: amostras de audio pendentes (0..4; sem amostras = pacote nulo)
---     pacote 1: alterna ACR (N/CTS), AVI InfoFrame, ACR, Audio InfoFrame
+--     pacote 1: ACR (N/CTS) uma vez por ms; nas outras linhas AVI e Audio InfoFrame alternados
 --   Ilha: preambulo 8 + guarda 2 + 2 x 32 + guarda 2 = 76 pontos (cabe em 480p/576p/720p).
 --   Pacotes: cabecalho 3 bytes + ECC (BCH 32,24); 4 subpacotes de 7 bytes + ECC (BCH 64,56).
 --   Escrito para o Timmy a partir da especificacao HDMI 1.3 (seccao 5.2, TERC4, pacotes).
@@ -167,6 +167,10 @@ architecture rtl of hdmi_tx is
 
   -- ilha
   signal hs_a, hs_a_d : std_logic := '0';
+  -- (62) ACR uma vez por milissegundo (a cada CTS pontos = N/128 amostras), como o NextNano e o NanoMig
+  --   do djnice, que dao som numa TV antiga onde o Timmy (ACR em cada 2 linhas) nao dava
+  signal acr_c : integer range 0 to CTS := 0;
+  signal acr_pend : std_logic := '0';
   signal t_il : integer range 0 to 127 := 127;               -- 127 = sem ilha
   signal linha : unsigned(1 downto 0) := "00";
   signal am_buf : amostra_arr;
@@ -229,6 +233,7 @@ begin
   begin
     if rising_edge(clk) then
       hs_a_d <= hs_a;
+      if acr_c = CTS - 1 then acr_c <= 0; acr_pend <= '1'; else acr_c <= acr_c + 1; end if;
       if hs_a = '1' and hs_a_d = '0' then
         t_il <= 0;
       elsif t_il /= 127 then
@@ -262,11 +267,11 @@ begin
           end loop;
         end if;
         hb_r <= hb; pb_r <= pb;
-        case linha is
-          when "01"   => pk1 <= P_AVI;
-          when "11"   => pk1 <= P_AIF;
-          when others => pk1 <= P_ACR;
-        end case;
+        if acr_pend = '1' then
+          pk1 <= P_ACR;
+          if acr_c /= CTS - 1 then acr_pend <= '0'; end if;     -- (nao apaga um pedido do mesmo ciclo)
+        elsif linha(0) = '0' then pk1 <= P_AVI;
+        else pk1 <= P_AIF; end if;
       end if;
     end if;
   end process;
