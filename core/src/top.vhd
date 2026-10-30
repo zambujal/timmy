@@ -352,11 +352,7 @@ begin
       rs <= rs(1 downto 0) & I_reset;
       ns <= ns(1 downto 0) & I_nmi;
       tdeb <= tdeb + 1;
-      -- (62) nos primeiros ~2 s (ate' o Z80 arrancar) os botoes ficam a 0: o pino 88 e' tambem um MODE do
-      -- FPGA e nalgumas placas (3923) da' um impulso ao configurar, que contava como um toque (escolha 1 = .ls)
-      if tdeb = 0 then
-        if arranque /= 108000000 then rdeb <= '0'; ndeb <= '0'; else rdeb <= rs(2); ndeb <= ns(2); end if;
-      end if;
+      if tdeb = 0 then rdeb <= rs(2); ndeb <= ns(2); end if;
     end if;
   end process;
 
