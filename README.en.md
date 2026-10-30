@@ -23,7 +23,10 @@ card, which each user puts there (see "The card").
 
 ## 1. What you need
 
-- **Tang Nano 20K** (Sipeed). Any revision; the board connects to the PC over USB-C.
+- **Tang Nano 20K** (Sipeed), version **3921** or **3923** — the number printed on the board under the FPGA.
+  The core is the same on both (the FPGA pins did not change); what changes on the 3923, from mid-2026, is the
+  BL616 keyboard chip, which needs the **3923 Companion** firmware (section 5). The board connects to the PC
+  over USB-C.
 - **microSD card** formatted as **FAT32** (up to 32 GB is simplest).
 - **USB keyboard** and a **USB-C OTG** adapter (or a powered USB-C hub) to plug it into the Tang.
 - **HDMI cable** to a TV or monitor that accepts 720p at 50 Hz.
@@ -146,7 +149,9 @@ serializers, so it will probably need adapting.
 
 ## 4. Powering up and using it
 
-- Plug in the card, the HDMI and the keyboard; power the Tang over USB-C (a USB charger is enough).
+- Plug in the card, the HDMI and the keyboard; power the Tang over USB-C from a **2 A charger** (or a powered
+  hub). A PC USB port is enough for the Tang alone, but not for the Tang with the ESP board: the WiFi current
+  spikes pull the 5 V down and the HDMI drops out for an instant. Keep the PC for flashing only.
 - At power-up "TIMMY - ARRANQUE" shows for an instant (the boot program reading the ROMs from the card),
   then esxDOS and the TC2048 BASIC. If something is missing from the card, the screen says what and the
   border turns red; fix the card and it retries by itself every 2 s.
@@ -161,6 +166,10 @@ serializers, so it will probably need adapting.
     8 RESET, 10 `.gs`, 15 turbo. To get back to the plain NMI, press until the LEDs go off. Held for 3 s it
     switches core (multiboot, if there is another one at `0x100000`).
 - From the keyboard, without the ESP32 board, there is no NMI key: it is the button.
+- **Pentagon 128 or 1024?** For Pentagon *128* demos and games use **Pentagon 128**: in esxDOS type
+  `.go128 -penta` (or pick it in the machine menu). In **Pentagon 1024** (`.go1024`) bits 5, 6 and 7 of port
+  7FFD select banks — a 128 demo that writes them (many do) jumps to another memory area halfway through:
+  black screen and broken music. 1024 is only for what asks for it (16C mode, 512K/1024K).
 
 ## 5. USB keyboard, mouse and gamepad (BL616 firmware)
 
@@ -178,9 +187,17 @@ own risk.
 
 ### 5.1 What to download
 
-- From the FPGA-Companion release for the Tang Nano 20K: `bl616_fpga_partner_nano20k.bin`,
+- **3921 board**: from the FPGA-Companion release for the Tang Nano 20K: `bl616_fpga_partner_nano20k.bin`,
   `fpga_companion_nano20k.bin` and `flash_nano20k.ini` (it flashes both: the Partner at `0x000000` and the
   Companion at `0x40000`).
+- **3923 board**: the 3921 Companion gives no keyboard (the BL616's SPI is on other pins). What is tested and
+  working is the one from the **NextNano** release (github.com/RetroSilicon/NextNano): the Partner
+  `bl616_fpga_partner_20kNano.bin` at `0x0` and `fpga_companion_tn20k_3923.bin` at `0x40000` — that one only,
+  never both Companions. It is the same FPGA Companion built for the 3923, and it serves Timmy, the Next and the
+  other cores. The rcdev67/FPGA-Companion fork also has an `fpga_companion_nano20k_v3923.bin`, but on a 3923
+  board it gave no keyboard — kept here as an alternative to try.
+- There is no way to tell the version with the BL616 in flashing mode: read the number on the board, and if
+  the keyboard does not show up with one Companion, flash the other — it does no harm.
 - Bouffalo Lab's flashing tool: on Windows **BLDevCube** (graphical); on Linux **BLFlashCommand**, which
   comes in the same "Bouffalo Flash Cube" package / in the Bouffalo SDK
   (`tools/bflb_tools/bouffalo_flash_cube/`).
@@ -260,6 +277,7 @@ plugin, 2068 TAP stub). They are assembled with **sjasmplus**.
 - esxDOS: https://www.esxdos.org
 - Bob Fossil's browser and plugins (BPLUGINS), which our browser started from: http://www.thefossilrecord.co.uk
 - FPGA Companion / Partner for the BL616 (keyboard, mouse, gamepad): https://github.com/MiSTle-Dev/FPGA-Companion
+- Companion for the 3923 board (NextNano release): https://github.com/RetroSilicon/NextNano ; fork with 3921/3923: https://github.com/rcdev67/FPGA-Companion
 - BL616 flashing tools (BLDevCube, BLFlashCommand), Bouffalo Lab: https://dev.bouffalolab.com
 - General Sound firmware (sources): https://github.com/psbhlw/gs-firmware
 - ZX Spectrum 48K and 128K ROMs (Amstrad allows distribution for emulation):

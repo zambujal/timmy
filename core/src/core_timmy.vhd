@@ -396,7 +396,7 @@ begin
   ua_wr  <= io_wr and ua_cs and not zx_reg(0);
   ua_rd  <= io_rd and ua_cs;
   ua_dat <= not zx_reg(0);                           -- C6 = ...0, C7 = ...1
-  maq_st <= (not gs_rst) & ay3_lig & "0000" & dv_m2068 & modo128 & regf3;
+  maq_st <= (not gs_rst) & ay3_lig & "000" & m1024 & dv_m2068 & modo128 & regf3;   -- (62) bit 2 do 79 = 1024K (DDh bit 2 e EFF7 bit 2 a 0)
   process(clk)
   begin
     if rising_edge(clk) then

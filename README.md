@@ -22,7 +22,9 @@ o esxDOS, que cada um mete lá (ver "O cartão").
 
 ## 1. O que é preciso
 
-- **Tang Nano 20K** (Sipeed). Qualquer revisão; a placa liga-se ao PC pelo USB-C.
+- **Tang Nano 20K** (Sipeed), versão **3921** ou **3923** — o número impresso na placa por baixo do FPGA.
+  O core é o mesmo nas duas (os pinos do FPGA não mudaram); o que muda na 3923, de meados de 2026, é o chip
+  BL616 do teclado, que precisa do firmware **Companion da 3923** (secção 5). A placa liga-se ao PC pelo USB-C.
 - **Cartão microSD** formatado em **FAT32** (até 32 GB é o mais simples).
 - **Teclado USB** e um adaptador **USB-C OTG** (ou um hub USB-C alimentado) para o ligar ao Tang.
 - **Cabo HDMI** para uma TV ou monitor que aceite 720p a 50 Hz.
@@ -147,7 +149,9 @@ por isso é provável que precise de adaptações.
 
 ## 4. Ligar e usar
 
-- Ligar o cartão, o HDMI e o teclado; alimentar o Tang pelo USB-C (um carregador USB chega).
+- Ligar o cartão, o HDMI e o teclado; alimentar o Tang pelo USB-C por um **carregador de 2 A** (ou hub
+  alimentado). Uma porta USB de PC chega para o Tang sozinho, mas não para o Tang com a placa ESP: os picos
+  de corrente do WiFi fazem cair o 5 V e o HDMI perde o sinal por instantes. O PC fica só para gravar.
 - Ao ligar aparece "TIMMY - ARRANQUE" um instante (o programa a ler as ROMs do cartão) e depois o
   esxDOS e o BASIC do TC2048. Se faltar alguma coisa no cartão, o ecrã diz o quê e a borda fica
   vermelha; corrige-se o cartão e ele tenta sozinho de 2 em 2 s.
@@ -162,6 +166,10 @@ por isso é provável que precise de adaptações.
     TC2048), 8 RESET, 10 `.gs`, 15 turbo. Para voltar ao NMI normal, carrega até os LEDs apagarem.
     Carregado 3 s troca de core (multiboot, se houver outro em `0x100000`).
 - Pelo teclado, sem a placa ESP32, não há tecla de NMI: é o botão.
+- **Pentagon 128 ou 1024?** Para as demos e jogos de Pentagon *128* usa o **Pentagon 128**: no esxDOS escreve
+  `.go128 -penta` (ou escolhe-o no menu das máquinas). No **Pentagon 1024** (`.go1024`) os bits 5, 6 e 7 do
+  porto 7FFD passam a escolher bancos — uma demo de 128 que os escreva (muitas fazem) salta para outra zona da
+  memória a meio: ecrã a preto e música estragada. O 1024 é só para o que o pede (modo 16C, 512K/1024K).
 
 ## 5. O teclado USB, o rato e o comando (firmware do BL616)
 
@@ -179,9 +187,17 @@ mas é por conta e risco de cada um.
 
 ### 5.1 O que descarregar
 
-- Do release do FPGA-Companion para o Tang Nano 20K: `bl616_fpga_partner_nano20k.bin`,
+- **Placa 3921**: do release do FPGA-Companion para o Tang Nano 20K: `bl616_fpga_partner_nano20k.bin`,
   `fpga_companion_nano20k.bin` e o `flash_nano20k.ini` (grava os dois: o Partner em `0x000000` e o
   Companion em `0x40000`).
+- **Placa 3923**: o Companion da 3921 não dá teclado (o SPI do BL616 está noutros pinos). O que está
+  testado a funcionar é o do release do **NextNano** (github.com/RetroSilicon/NextNano): o Partner
+  `bl616_fpga_partner_20kNano.bin` em `0x0` e o `fpga_companion_tn20k_3923.bin` em `0x40000` — só esse,
+  nunca os dois Companions. É o mesmo FPGA Companion compilado para a 3923, e serve o Timmy, o Next e os
+  outros cores. O fork rcdev67/FPGA-Companion também tem um `fpga_companion_nano20k_v3923.bin`, mas numa
+  placa 3923 não deu teclado — fica como alternativa a experimentar.
+- Não há maneira de ver a versão com o BL616 em modo de gravação: vê-se o número na placa, e se o teclado
+  não aparecer com um Companion, grava-se o outro — não faz mal nenhum.
 - A ferramenta de gravar da Bouffalo Lab: em Windows o **BLDevCube** (programa gráfico); em Linux o
   **BLFlashCommand**, que vem no mesmo pacote "Bouffalo Flash Cube" / no Bouffalo SDK
   (`tools/bflb_tools/bouffalo_flash_cube/`).
@@ -263,6 +279,7 @@ stub do TAP do 2068). Montam-se com o **sjasmplus**.
 - esxDOS: https://www.esxdos.org
 - Navegador e plugins do Bob Fossil (BPLUGINS), de que o nosso navegador partiu: http://www.thefossilrecord.co.uk
 - FPGA Companion / Partner para o BL616 (teclado, rato, comando): https://github.com/MiSTle-Dev/FPGA-Companion
+- Companion para a placa 3923 (release do NextNano): https://github.com/RetroSilicon/NextNano ; fork com 3921/3923: https://github.com/rcdev67/FPGA-Companion
 - Ferramentas de gravar o BL616 (BLDevCube, BLFlashCommand), Bouffalo Lab: https://dev.bouffalolab.com
 - Firmware do General Sound (fontes): https://github.com/psbhlw/gs-firmware
 - ROMs do ZX Spectrum 48K e 128K (a Amstrad autoriza a distribuição para emulação):

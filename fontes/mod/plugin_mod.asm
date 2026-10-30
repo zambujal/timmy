@@ -11,6 +11,9 @@
 ;   byte 0 bit 0 = repetir (nao acaba; so' o BREAK sai), bit 1 = no fim, o ficheiro seguinte (por omissao 1);
 ;   byte 1 = tempo maximo em minutos (0 = sem limite): ao fim desse tempo conta como o fim da musica.
 ; Memoria: codigo em 8000h; o ficheiro passa em bocados de 4K por A3E0h (PLUGIN_RESTORE_BUFFERS).
+; v6 (2026-10-29): a posicao (60h) so' conta depois de o GS a por a 0 (a cancao nova a andar): logo a seguir
+;   ao 31h a primeira leitura podia trazer a posicao do modulo anterior e a seguinte (0) parecia "voltou para
+;   tras" -> o 2.o MOD acabava em 1-2 s. Espera ate' 2 s pelo 0; e no fim diz em que posicao acabou (mensagem).
 ; (Timmy, 2026-10-26)
 
                     include "esxdos.inc"
@@ -119,7 +122,23 @@ Fim                 ld a,(FH)
                     jp c,ErroGS2
                     xor a
                     ld (Pos),a
-                    ld hl,0
+                    ld (PosAnt),a
+                    ld b,40             ; (v6) espera que o GS ponha a posicao a 0 (ate' 40 x 50 ms)
+Esp0                push bc
+                    ld de,4000
+Esp0a               dec de
+                    ld a,d
+                    or e
+                    jr nz,Esp0a
+                    ld a,60h
+                    call Comando
+                    pop bc
+                    jp c,ErroGS2
+                    in a,(GS_DAT)
+                    or a
+                    jr z,Esp0ok
+                    djnz Esp0
+Esp0ok              ld hl,0
                     ld (Voltas),hl      ; voltas de ~70 ms (860 por minuto)
                     ld a,(Minutos)      ; o limite em voltas: minutos x 860
                     ld hl,0
@@ -159,13 +178,16 @@ TSemLim             ld a,60h            ; a posicao na cancao
                     jr c,Fim2           ; o GS deixou de responder: sai
                     in a,(GS_DAT)
                     ld hl,Pos
+                    ld c,(hl)
+                    ld (PosAnt),bc      ; (v6) PosAnt = a anterior (C); o byte seguinte e' lixo, nao faz mal
                     cp (hl)
                     ld (hl),a
                     jr nc,Toca          ; ainda a andar para a frente
                     ld a,(Opc)          ; voltou para tras: acabou. (v4) A repetir: continua
                     rra
                     jr c,Toca
-Acabou              ld a,(Opc)          ; o seguinte (bit 1) ou so' parar
+Acabou              call MostraFim      ; (v6) escreve "NNN MMM" (posicao final, anterior) no canto do ecra, 2 s
+                    ld a,(Opc)          ; o seguinte (bit 1) ou so' parar
                     and 2
                     jr z,Brk
                     ld a,32h
@@ -252,7 +274,85 @@ ErroGS2             pop iy
                     ld a,PLUGIN_ERROR|PLUGIN_MSG|PLUGIN_RESTORE_BUFFERS
                     ret
 
+; (v6) diagnostico: escreve no canto superior esquerdo do ecra a posicao final (Pos) e a anterior (PosAnt),
+; 3 algarismos cada, com uma letra 8x8 propria, e espera ~2 s para se ler (o navegador redesenha depois)
+MostraFim           push af
+                    push bc
+                    push de
+                    push hl
+                    ld hl,4000h
+                    ld a,(Pos)
+                    call Num3
+                    inc hl
+                    ld a,(PosAnt)
+                    call Num3
+                    ld a,47h            ; atributos: branco sobre azul, brilho
+                    ld hl,5800h
+                    ld b,7
+MFa                 ld (hl),a
+                    inc hl
+                    djnz MFa
+                    ld de,0             ; ~2 s a 3,5 MHz (65536 x ~100 T)
+MFe                 push de
+                    ld b,8
+MFe2                djnz MFe2
+                    pop de
+                    dec de
+                    ld a,d
+                    or e
+                    jr nz,MFe
+                    pop hl
+                    pop de
+                    pop bc
+                    pop af
+                    ret
+Num3                ld c,100            ; A -> 3 algarismos a partir da celula (HL), HL avanca 3
+                    call Dig
+                    ld c,10
+                    call Dig
+                    ld c,1
+Dig                 ld b,0              ; B = algarismo = quantas vezes cabe C em A
+Dig2                cp c
+                    jr c,Dig3
+                    sub c
+                    inc b
+                    jr Dig2
+Dig3                push af
+                    push hl
+                    push bc
+                    ld a,b
+                    add a,a
+                    add a,a
+                    add a,a             ; x 8
+                    ld e,a
+                    ld d,0
+                    ex de,hl
+                    ld bc,Algarismos
+                    add hl,bc           ; HL = a letra, DE = a celula
+                    ld b,8
+Dig4                ld a,(hl)
+                    ld (de),a
+                    inc hl
+                    inc d               ; linha seguinte do ecra (+256)
+                    djnz Dig4
+                    pop bc
+                    pop hl
+                    pop af
+                    inc hl
+                    ret
+Algarismos          db 3Ch,66h,6Eh,76h,66h,66h,3Ch,00h   ; 0
+                    db 18h,38h,18h,18h,18h,18h,3Ch,00h   ; 1
+                    db 3Ch,66h,06h,0Ch,18h,30h,7Eh,00h   ; 2
+                    db 3Ch,66h,06h,1Ch,06h,66h,3Ch,00h   ; 3
+                    db 0Ch,1Ch,3Ch,6Ch,7Eh,0Ch,0Ch,00h   ; 4
+                    db 7Eh,60h,7Ch,06h,06h,66h,3Ch,00h   ; 5
+                    db 1Ch,30h,60h,7Ch,66h,66h,3Ch,00h   ; 6
+                    db 7Eh,06h,0Ch,18h,30h,30h,30h,00h   ; 7
+                    db 3Ch,66h,66h,3Ch,66h,66h,3Ch,00h   ; 8
+                    db 3Ch,66h,66h,3Eh,06h,0Ch,38h,00h   ; 9
 FH                  db 0
+PosAnt              db 0
+                    db 0                ; (o ld (PosAnt),bc escreve 2 bytes)
 Modulo              db 0
 Pos                 db 0
 Opc                 db 2

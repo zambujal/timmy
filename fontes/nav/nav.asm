@@ -787,11 +787,11 @@ LeFiltro            di
                     and 1               ; guardada (v24: qualquer maquina)
                     ld (Pendente),a
                     pop af
-                    push af             ; v24: bits do Pentagon (7, 3) da maquina pendente
-                    and 88h
+                    push af             ; v24: bits do Pentagon (7, 3, e v27 2 = 1024K) da maquina pendente
+                    and 8Ch
                     ld (PendPenta),a
                     pop af
-                    and 0C8h            ; + bit 3 (Pentagon 256 do .go256)
+                    and 0CCh            ; + bit 3 (Pentagon 256 do .go256) e bit 2 (1024K do .go1024, v27)
                     jp m,LFpenta        ; o bit 3 so' com o Pentagon (bit 7)
                     and 0C0h
 LFpenta             ld (F3extra),a
@@ -839,8 +839,8 @@ ValorDD             ld a,(F3extra)
                     bit 6,a
                     jr z,VDsc
                     ld c,2
-VDsc                and 88h
-                    cp 88h
+VDsc                and 8Ch             ; v27: so' o 1024 (bit 2 marcado pelo .go1024 / menu) poe o DDh bit 2;
+                    cp 8Ch              ; o 256 (so' o bit 3) fica com a paginacao do 128 + o bit 6 do 7FFD
                     ld a,c
                     ret nz
                     or 4
@@ -888,6 +888,9 @@ ComandoGo           ld a,(NovaMaq)
                     ret z
                     ld a,(NovaPenta)
                     ld ix,TxtGo1024
+                    cp 8Ch              ; v27: 8Ch = 1024, 88h = 256, 80h = 128
+                    ret z
+                    ld ix,TxtGo256
                     cp 88h
                     ret z
                     ld ix,TxtGoPenta
@@ -899,6 +902,7 @@ TxtGo128            db "go128",0
 TxtGoTimex          db "go128 -timex",0
 TxtGoPenta          db "go128 -penta",0
 TxtGo1024           db "go1024",0
+TxtGo256            db "go256",0
 TxtGo2068           db "go2068",0
 TxtGoReset          db "go128 -reset",0
 ; v24d: como o .gs: /BIN/GS105B.ROM (32K) para o GS pelos registos ZXUNO A0h (1 = parado e
@@ -1129,9 +1133,10 @@ ValorF3             ld e,a
                     ld d,0
                     ld hl,TabF3-1
                     add hl,de
-                    ld a,(hl)
-                    ld hl,F3extra       ; + os bits 6-7 (Pentagon e sombra) se os houver
-                    or (hl)
+                    ld d,(hl)
+                    ld a,(F3extra)      ; + os bits 6-7 (Pentagon e sombra) e 3 (256) se os houver;
+                    and 0FBh            ; v27: o bit 2 e' so' a marca do 1024 (DDh), nao vai ao F3
+                    or d
                     ret
 
 ; A = maquina: escreve o F3 (e a FF a 0 se a FF passar a ser do Timex)
@@ -1285,9 +1290,9 @@ RIantigo            call SaiNav         ; (v23: carregava a ROM e reiniciava ele
                     ld a,(NovaMaq)
                     call ValorF3        ; A = F3 com o bit 7
                     call TMP            ; -> A = 80h ou C0h (com sombra)
-                    ld b,a              ; v23: + o bit 3 (Pentagon 1024)
+                    ld b,a              ; v23: + o bit 3 (Pentagon 256/1024) e v27 o bit 2 (1024)
                     ld a,(NovaPenta)
-                    and 8
+                    and 0Ch
                     or b
                     ld (F3extra),a
                     call GuardaFiltro   ; pagina 12: o NAV mantem-nos nos NMIs
@@ -2589,9 +2594,12 @@ DFHn                ld a,(F3extra)      ; Pentagon (F3 bit 7)
                     rla
                     jr nc,DFHp
                     ld hl,TxtPentaNome
-                    ld a,(F3extra)      ; v23: com o bit 3 e' o Pentagon 1024
-                    and 8
+                    ld a,(F3extra)      ; v23: com o bit 3 e' o 256; v27: com o bit 2 e' o 1024
+                    and 0Ch
                     jr z,DFHp
+                    ld hl,TxtP256Nome
+                    cp 0Ch
+                    jr nz,DFHp
                     ld hl,TxtP1024Nome
 DFHp                ld d,0
                     ld e,0
@@ -2631,9 +2639,12 @@ DFn                 ld a,(F3extra)      ; Pentagon (F3 bit 7)
                     rla
                     jr nc,DFp
                     ld hl,TxtPentaNome
-                    ld a,(F3extra)      ; v23: com o bit 3 e' o Pentagon 1024
-                    and 8
+                    ld a,(F3extra)      ; v23: com o bit 3 e' o 256; v27: com o bit 2 e' o 1024
+                    and 0Ch
                     jr z,DFp
+                    ld hl,TxtP256Nome
+                    cp 0Ch
+                    jr nz,DFp
                     ld hl,TxtP1024Nome
 DFp                 ld d,1
                     ld e,0
@@ -2660,15 +2671,9 @@ DFattr              ld d,1
 
 ; ---------------------------------------------------------------------------
 ; Menu das maquinas (ENTER na barra de cima). 7/6 ou joystick, ENTER escolhe, ESPACO volta.
-NMENU               equ 7                   ; v24g: 6 maquinas a' esquerda (o Pentagon: 128 no clone,
-MNESQ               equ 6                   ; 1024 com os 16 cores na Tang) e o GS a' direita (so' na Tang)
+NMENU               equ 9                   ; v27: 8 maquinas a' esquerda (PENTAGON 128 e, so' na Tang, 256 e
+MNESQ               equ 8                   ; 1024) e o GS a' direita (so' na Tang); o clone mostra 6
 Menu                call VeTang         ; v24g: Tang (registo ZXUNO A3h = 54h) ou clone
-                    ld hl,TxtP128
-                    jr z,MNpn
-                    ld hl,TxtP1024
-MNpn                ld de,TabPenta
-                    ld bc,14
-                    ldir
                     ld a,(Filtro)
                     dec a
                     ld (MenuSel),a
@@ -2716,7 +2721,7 @@ MNcor               ld b,16
                     pop hl
                     inc c
                     ld a,c
-                    cp MNESQ            ; v24g: o GS so' na Tang
+                    cp 6                ; v26: o PENTAGON 1024 e o GS so' na Tang (o clone fica nas 6)
                     jr nz,MNnx
                     ld a,(EhTang)
                     or a
@@ -2758,7 +2763,7 @@ MNtk                push af
                     cp '5'
                     jr z,MNesqk
                     cp 13
-                    jr z,MNesc
+                    jp z,MNesc
                     cp ' '
                     jp z,MNsai
                     cp 3
@@ -2787,7 +2792,15 @@ MNcima              ld a,(MenuSel)
                     jr MNmuda
 MNbaixo             ld a,(MenuSel)
                     inc a
-                    cp MNESQ
+                    ld b,a
+                    ld a,(EhTang)       ; v26: no clone so' ha' 6 maquinas
+                    or a
+                    ld a,b
+                    jr nz,MNbTang
+                    cp 6
+                    jr nc,MNtecla
+                    jr MNmuda
+MNbTang             cp MNESQ
                     jr nc,MNtecla
 ; so' a cor das duas linhas que mudam (sem redesenhar o menu todo)
 MNmuda              push af
@@ -2839,12 +2852,14 @@ MNmaq               xor a
                     push af
                     call MusCala        ; v23: tambem calada ao mudar para o Pentagon
                     pop af
-                    ld a,(EhTang)       ; clone: o Pentagon 128 (ZX 128K com o F3 bit 7)
-                    or a                ; Tang: o Pentagon 1024 (+ F3 bit 3; o 1024K vem do DDh)
-                    ld a,80h
+                    ld b,80h            ; v27: item 5 = PENTAGON 128 (F3 bit 7), 6 = 256 (+ bit 3: 7FFD bit 6),
+                    cp 7                ; 7 = 1024 (+ bit 2: DDh bit 2, EFF7 = 0). A escolha e' explicita: as
+                    jr c,MNp128         ; demos de 128 escrevem os bits 5/6 do 7FFD e no 1024 isso pagina
+                    ld b,88h
                     jr z,MNp128
-                    ld a,88h
-MNp128              ld (NovaPenta),a
+                    ld b,8Ch
+MNp128              ld a,b
+                    ld (NovaPenta),a
                     ld a,3
                     jp TMcomum
 MNtroca             jp TrocaMaquina
@@ -5323,6 +5338,7 @@ TxtVazio            db 0
 TxtGrupos           db "DIR",0,"0-9",0," #",0,0," *",0,0
 TxtPentaNome        db " PENTAGON",0
 TxtP1024Nome        db " PENTA 1024",0
+TxtP256Nome         db " PENTA 256",0
 TxtPentaBin         db "/BIN/PENTA.BIN",0
 TxtFiltros          db " TIMEX 2048",0," ZX 48K",0," ZX 128K",0," TX2048 128",0," TC2068",0
 TxtMaq              db "  ?",0,0,0,0,0
@@ -5367,7 +5383,9 @@ TabMenu             db "TIMEX 2048",0,0
                     db "ZX 128K",0,0
                     db "TIMEX 128K",0,0
                     db "TC2068",0,0
-TabPenta            db "PENTAGON 128 ",0,0     ; (o Menu poe aqui o nome certo, 14 bytes)
+TabPenta            db "PENTAGON 128 ",0,0
+                    db "PENTAGON 256 ",0,0     ; v27 (so' na Tang)
+                    db "PENTAGON 1024",0,0     ; v26 (so' na Tang)
                     db "GENERAL SOUND",0,0
 TxtAMudar           db "A reiniciar...",0
 TxtSemRom           db "Falta a ROM (/BIN)",0

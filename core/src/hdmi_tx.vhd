@@ -125,6 +125,7 @@ architecture rtl of hdmi_tx is
   begin
     pb(1) := x"10";                                         -- RGB, A0 = 1
     if LARGO then pb(2) := x"28"; else pb(2) := x"18"; end if;  -- 16:9 / 4:3, R = igual
+    pb(3) := x"08";                                         -- (core 62) Q = RGB gama completa 0..255, como o NextNano
     pb(4) := std_logic_vector(to_unsigned(VIC, 8));
     pb(0) := soma(hb & pb(1 to 13));
     return pb;
@@ -133,7 +134,7 @@ architecture rtl of hdmi_tx is
     variable pb : sv_arr(0 to 27) := (others => x"00");
     variable hb : sv_arr(0 to 2) := (x"84", x"01", x"0A");
   begin
-    pb(1) := x"01";                                         -- 2 canais, tipo do fluxo
+    pb(1) := x"11";                                         -- 2 canais, CT = 1 (PCM; era 0 = "ver o fluxo"), como o NextNano
     pb(0) := soma(hb & pb(1 to 10));
     return pb;
   end function;

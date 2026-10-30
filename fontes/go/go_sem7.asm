@@ -291,7 +291,11 @@ Marca               ld a,128+12         ; para o NAV: os bits 6-7 do F3 na pagin
                     bit 7,a             ; o bit 3 so' com o Pentagon (bit 7); JR: este codigo
                     jr nz,MarcaP        ; corre em 5B00h, um JP iria para o endereco montado
                     and 0C0h
-MarcaP              ld (3FFEh),a
+MarcaP
+                    IFDEF GO1024
+                    or 4                ; v27 (2026-10-29): bit 2 = 1024K, para o NAV distinguir do .go256
+                    ENDIF
+                    ld (3FFEh),a
                     ld a,d              ; maquina: 3 ZX 128K (F3 bit 5, barramento flutuante)
                     and 20h             ; ou 4 Timex 128 (-bus)
                     ld a,3
