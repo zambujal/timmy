@@ -63,7 +63,7 @@ card, which each user puts there (see "The card").
      github.com/psbhlw/gs-firmware;
    - `BIN/PLUG2068/TAP` — TAP plugin for the TC2068 (**without it TAPs do not load from the browser in TC2068
      mode**). It is not in the repository because it is made from Bob Fossil's TAP plugin; make it with
-     `python3 fontes/plug2068/faz_plug2068.py BIN/BPLUGINS/TAP BIN/PLUG2068/TAP` (`faz_cartao.sh` already does it).
+     `python3 fontes/plug2068/faz_plug2068.py BIN/BPLUGINS/TAP BIN/PLUG2068/TAP` (`faz_cartao.sh` already does it; what it is and why: `fontes/plug2068/LEIAME.md`).
    Without them Timmy is a TC2048 with esxDOS; the browser tells you when one is missing.
 7. Games go in folders at the root (for example `GAMES/`, or one per letter).
 8. **Finally, with the card in the PC, run `ferramentas/cartao.py`** (section 6): it builds the indexes that

@@ -62,7 +62,7 @@ o esxDOS, que cada um mete lá (ver "O cartão").
      estão em github.com/psbhlw/gs-firmware;
    - `BIN/PLUG2068/TAP` — plugin TAP para o TC2068 (**sem ele os TAP não carregam no navegador no modo
      TC2068**). Não vem no repositório porque é feito do plugin TAP do Bob Fossil; faz-se com
-     `python3 fontes/plug2068/faz_plug2068.py BIN/BPLUGINS/TAP BIN/PLUG2068/TAP` (o `faz_cartao.sh` já o faz).
+     `python3 fontes/plug2068/faz_plug2068.py BIN/BPLUGINS/TAP BIN/PLUG2068/TAP` (o `faz_cartao.sh` já o faz; o que é e porquê: `fontes/plug2068/LEIAME.md`).
    Sem eles o Timmy é um TC2048 com esxDOS; o navegador avisa quando falta um.
 7. Os jogos vão em pastas na raiz (por exemplo `JOGOS/`, ou uma por letra).
 8. **No fim, com o cartão no PC, corre o `ferramentas/cartao.py`** (secção 6): faz os índices que dão
