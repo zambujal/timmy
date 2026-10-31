@@ -4,7 +4,8 @@
 # 1. (se dado) o esxDOS: BIN, SYS, TMP do zip (esxdos.org)
 # 2. o navegador do Bob Fossil (NMI.SYS + BIN/BPLUGINS), descarregado de thefossilrecord.co.uk
 # 3. a pasta cartao/ deste repositorio por cima
-# 4. os indices (cartao.py --fazer)
+# 4. o BIN/PLUG2068/TAP (TAPs no modo TC2068), feito do plugin TAP do Bob Fossil com o faz_plug2068.py
+# 5. os indices (cartao.py --fazer)
 # As ROMs (SYS/ROMS/TC2048.ROM, SYS/ROMS/ESXMMC.BIN, BIN/128.rom...) metes tu: ver o README.
 set -e
 CARTAO="$1"; ESXDOS="$2"
@@ -36,6 +37,11 @@ cp "$N" "$CARTAO/SYS/NMI.SYS"
 
 echo "== cartao/ do Timmy por cima"
 cp -r "$REPO/cartao/." "$CARTAO/"
+
+echo "== plugin TAP do TC2068 (BIN/PLUG2068/TAP)"
+mkdir -p "$CARTAO/BIN/PLUG2068"
+python3 "$REPO/fontes/plug2068/faz_plug2068.py" "$CARTAO/BIN/BPLUGINS/TAP" "$CARTAO/BIN/PLUG2068/TAP" \
+    || echo "AVISO: sem o BIN/PLUG2068/TAP os TAP nao carregam no modo TC2068 (ver o README)"
 
 echo "== indices"
 python3 "$AQUI/cartao.py" "$CARTAO" --fazer

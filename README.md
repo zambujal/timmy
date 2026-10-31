@@ -60,15 +60,16 @@ o esxDOS, que cada um mete lá (ver "O cartão").
      bytes), ou com mais os 8K do esxDOS do 2068 a seguir (32768 bytes), que dá esxDOS nesse modo;
    - `BIN/GS105B.ROM` — o firmware do General Sound, versão 1.05b (32768 bytes), para o GS; as fontes
      estão em github.com/psbhlw/gs-firmware;
-   - `BIN/PLUG2068/TAP` — plugin TAP para o TC2068, feito a partir do plugin TAP do esxDOS com
-     `python3 fontes/plug2068/faz_plug2068.py BIN/BPLUGINS/TAP BIN/PLUG2068/TAP`.
+   - `BIN/PLUG2068/TAP` — plugin TAP para o TC2068 (**sem ele os TAP não carregam no navegador no modo
+     TC2068**). Não vem no repositório porque é feito do plugin TAP do Bob Fossil; faz-se com
+     `python3 fontes/plug2068/faz_plug2068.py BIN/BPLUGINS/TAP BIN/PLUG2068/TAP` (o `faz_cartao.sh` já o faz).
    Sem eles o Timmy é um TC2048 com esxDOS; o navegador avisa quando falta um.
 7. Os jogos vão em pastas na raiz (por exemplo `JOGOS/`, ou uma por letra).
 8. **No fim, com o cartão no PC, corre o `ferramentas/cartao.py`** (secção 6): faz os índices que dão
    ao navegador os nomes compridos, a coluna das letras e a barra de cima com o menu das máquinas. Sem
    eles o navegador funciona, mas incompleto.
 
-Em Linux, os passos 2, 3, 4 e 8 fazem-se de uma vez com o `ferramentas/faz_cartao.sh` (descarrega ele
+Em Linux, os passos 2, 3, 4 e 8 (e o `BIN/PLUG2068/TAP`) fazem-se de uma vez com o `ferramentas/faz_cartao.sh` (descarrega ele
 próprio o zip do Bob Fossil; as ROMs metes tu depois, ou antes):
 
 ```
