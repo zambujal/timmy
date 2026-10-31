@@ -1,4 +1,4 @@
--- top.vhd: Timmy HDMI, fase 1 (Tang Nano 20K, GW2AR-18).
+-- top.vhd: Timextenso HDMI, fase 1 (Tang Nano 20K, GW2AR-18).
 -- Cristal de 27 MHz -> PLL 135 MHz (serie TMDS, DDR) -> /5 = 27 MHz (ponto).
 -- Fase 3: Timex TC2068 / TC2048 (Z80, ROM HOME + EXROM, RAM 48K, portas FE/FF/F4), video HDMI.
 library ieee;
@@ -10,8 +10,8 @@ entity top is
            MODO480 : boolean := false;     -- true: 640x480p60 (25,2 MHz), tem prioridade
            M2068   : boolean := false;      -- true: TC2068; false: TC2048
            VEL     : integer := 1;         -- velocidade do Z80: 1 = 3,5 MHz, 2 = 7, 4 = 14
-           SID     : boolean := false;       -- Timmy: os dois SID (xxCF)
-           TIMMY   : boolean := true;     -- true: o Timmy inteiro (SCLD v13 + DivTIESUS v13), todas as maquinas
+           SID     : boolean := false;       -- Timextenso: os dois SID (xxCF)
+           TIMEXTENSO   : boolean := true;     -- true: o Timextenso inteiro (SCLD v13 + DivTIESUS v13), todas as maquinas
            PENTA   : boolean := false;     -- true: Pentagon 128/512/1024 (em vez do Timex)
            DIVMMC  : boolean := true;
            DIV_BRAM : boolean := false;    -- teste: RAM do DivMMC em BSRAM
@@ -182,7 +182,7 @@ architecture rtl of top is
   signal ce, ce35 : std_logic := '0';
   signal acc35 : integer range 0 to 8191 := 0;
   signal acc : integer range 0 to 8191 := 0;
-  signal vel_r : integer range 1 to 8 := VEL;          -- Timmy: muda com a escolha 15 dos botoes
+  signal vel_r : integer range 1 to 8 := VEL;          -- Timextenso: muda com a escolha 15 dos botoes
   signal arr_turbo, turbo_c : std_logic := '0';
   signal pisca_t : unsigned(24 downto 0) := (others => '0');
   signal halt_n, cpu_rst_n : std_logic := '0';
@@ -363,7 +363,7 @@ begin
       if usb_cad = '1' then cad_t <= to_unsigned(8000000, 23); elsif cad_t /= 0 then cad_t <= cad_t - 1; end if;
       if sd_pronta = '0' then arranque <= (others => '0'); cpu_rst_n <= '0';
       elsif arranque /= 108000000 then arranque <= arranque + 1; cpu_rst_n <= '0';
-      elsif arr_segura = '1' then cpu_rst_n <= '0';   -- menu de arranque (core Timmy)
+      elsif arr_segura = '1' then cpu_rst_n <= '0';   -- menu de arranque (core Timextenso)
       elsif k_rst = '1' then cpu_rst_n <= '0';        -- reset pedido pelo ESP (registo 65 bit 0)
       elsif usb_cad = '1' or cad_t /= 0 then cpu_rst_n <= '0';   -- Ctrl+Alt+Del
       else cpu_rst_n <= '1'; end if;
@@ -382,7 +382,7 @@ begin
     end if;
   end process;
 
-  timex_g: if not PENTA and not TIMMY generate
+  timex_g: if not PENTA and not TIMEXTENSO generate
     core: entity work.core_timex
       generic map (M2068 => M2068, DIV => DIVMMC, DIV_BRAM => DIV_BRAM, ALTA_BRAM => ALTA_BRAM)
       port map (clk => clk54, vclk => pclk, ce => ce, ce35 => ce35, reset_n => cpu_rst_n, nmi_n => nmi_core, mat => mat,
@@ -398,9 +398,9 @@ begin
     ecra7_c <= '0'; fsinc <= '0';
   end generate;
 
-  -- Timmy: SCLD v13 + DivTIESUS v13 (TC2048, 128K, Pentagon 128/256 pelas portas, como o clone)
-  timmy_g: if TIMMY generate
-    core: entity work.core_timmy generic map (COM_SID => SID)
+  -- Timextenso: SCLD v13 + DivTIESUS v13 (TC2048, 128K, Pentagon 128/256 pelas portas, como o clone)
+  timextenso_g: if TIMEXTENSO generate
+    core: entity work.core_timextenso generic map (COM_SID => SID)
       port map (clk => clk54, clk_div => I_clk, vclk => pclk, ce => ce, ce35 => ce35, reset_n => cpu_rst_n,
                 nmi_n => nmi_core, mat => mat,
                 border => border_c, modo => modo_c, hcor => hcor_c, ecra7 => ecra7_c,
@@ -427,7 +427,7 @@ begin
     arr: entity work.teclas_arranque port map (clk => clk54, pronta => sd_pronta, rst_n => cpu_rst_n,
         bot_a => rdeb, bot_b => ndeb, segura => arr_segura, escolha => arr_esc, led_pisca => arr_pisca, nmi_rst => arr_nmi, turbo_t => arr_turbo, rnmi_t => pede_rnmi, mat => mat_arr);
   end generate;
-  sem_arr_g: if not TIMMY generate
+  sem_arr_g: if not TIMEXTENSO generate
     mat_arr <= (others => '0'); arr_segura <= '0'; arr_esc <= "0000"; arr_pisca <= '0'; arr_nmi <= '0';
   end generate;
 
@@ -459,14 +459,14 @@ begin
 
   -- botao A: escreve o programa de teste; botao B: BREAK
   -- com o DivMMC o botao B e' o NMI (o navegador do esxDOS) e o A escreve .ls
-  -- Timmy: o B so' e' o NMI com a escolha 0 (LEDs 4-6 apagados); as outras escrevem um comando
+  -- Timextenso: o B so' e' o NMI com a escolha 0 (LEDs 4-6 apagados); as outras escrevem um comando
   nmi_core <= not ((ndeb and not (arr_esc(3) or arr_esc(2) or arr_esc(1) or arr_esc(0))) or arr_nmi or k_nmi) when DIVMMC else '1';
   O_sd_dat1 <= '1'; O_sd_dat2 <= '1';
-  -- no Timmy as teclas automaticas nunca arrancam (inicio/brk presos a 0): nem as sintetiza
-  auto_g: if not TIMMY generate
-    auto: entity work.teclas_auto generic map (M128 => PENTA, LS => DIVMMC, BR => BROWSE, PK => PEEKT, TR => PENTA and DIVMMC) port map (clk => clk54, inicio => rdeb and cpu_rst_n and not to_std(TIMMY), brk => ndeb and not to_std(TIMMY), mat => mat_auto);
+  -- no Timextenso as teclas automaticas nunca arrancam (inicio/brk presos a 0): nem as sintetiza
+  auto_g: if not TIMEXTENSO generate
+    auto: entity work.teclas_auto generic map (M128 => PENTA, LS => DIVMMC, BR => BROWSE, PK => PEEKT, TR => PENTA and DIVMMC) port map (clk => clk54, inicio => rdeb and cpu_rst_n and not to_std(TIMEXTENSO), brk => ndeb and not to_std(TIMEXTENSO), mat => mat_auto);
   end generate;
-  sem_auto_g: if TIMMY generate mat_auto <= (others => '0'); end generate;
+  sem_auto_g: if TIMEXTENSO generate mat_auto <= (others => '0'); end generate;
 
   -- teclado USB pelo FPGA-Companion (BL616)
   mcu: entity work.mcu_spi port map (clk => clk54, ss => I_spi_csn, sclk => I_spi_sclk, mosi => I_spi_mosi,
@@ -531,7 +531,7 @@ begin
   end process;
   -- menu de arranque: LED3 pisca, LED4/LED5 = maquina escolhida. Depois: LED5 = o teclado USB ja' falou
   O_led_ofs <= not std_logic_vector(ofs_r) when CAP_TESTE else
-               not (arr_esc(3 downto 1) or atalho(2 downto 0)) when TIMMY else "11" & not dbg_hid;   -- LEDs 4-6: Win+J, Win+S, Win+C
+               not (arr_esc(3 downto 1) or atalho(2 downto 0)) when TIMEXTENSO else "11" & not dbg_hid;   -- LEDs 4-6: Win+J, Win+S, Win+C
 
   turbo_c <= '0' when vel_r = 1 and k_turbo = '0' else '1';
   vel_cod <= "0100" when k_turbo = '1' else std_logic_vector(to_unsigned(vel_r, 4));
@@ -560,10 +560,10 @@ begin
       if tom_c = 61363 then tom_c <= 0; tom <= not tom; else tom_c <= tom_c + 1; end if;
     end if;
   end process;
-  -- 14 bits: o Timmy da' 14 bits (com o GS); os outros cores 10 bits (x 16)
+  -- 14 bits: o Timextenso da' 14 bits (com o GS); os outros cores 10 bits (x 16)
   aud_in_l <= ("000000" & x"FF") when AUD_TESTE = 2 and tom = '1' else (others => '0') when AUD_TESTE = 2 else
-              aud_l(13 downto 0) when TIMMY else aud_l(9 downto 0) & "0000";
-  aud_in_r <= aud_in_l when AUD_TESTE = 2 else aud_r(13 downto 0) when TIMMY else aud_r(9 downto 0) & "0000";
+              aud_l(13 downto 0) when TIMEXTENSO else aud_l(9 downto 0) & "0000";
+  aud_in_r <= aud_in_l when AUD_TESTE = 2 else aud_r(13 downto 0) when TIMEXTENSO else aud_r(9 downto 0) & "0000";
   -- (esp49) a cada amostra nova do som.vhd: soma a do ESP (metade ou toda) com saturacao; o "tog" para o HDMI
   -- muda um ciclo depois (os dados ja' estao estaveis quando o HDMI os apanha)
   process(clk54)
@@ -624,14 +624,14 @@ begin
   begin
     if rising_edge(pclk) then cnt <= cnt + 1; end if;
   end process;
-  -- LED 1: SDRAM ok; no Timmy pisca com o turbo (devagar = 7 MHz, depressa = 14 MHz)
+  -- LED 1: SDRAM ok; no Timextenso pisca com o turbo (devagar = 7 MHz, depressa = 14 MHz)
   process(clk54)
   begin
     if rising_edge(clk54) then pisca_t <= pisca_t + 1; end if;
   end process;
-  O_led(0) <= not (sd_teste and pisca_t(24)) when TIMMY and vel_r = 2 else
-              not (sd_teste and pisca_t(22)) when TIMMY and vel_r = 4 else
-              not (sd_teste and pisca_t(20)) when TIMMY and vel_r = 8 else
+  O_led(0) <= not (sd_teste and pisca_t(24)) when TIMEXTENSO and vel_r = 2 else
+              not (sd_teste and pisca_t(22)) when TIMEXTENSO and vel_r = 4 else
+              not (sd_teste and pisca_t(20)) when TIMEXTENSO and vel_r = 8 else
               not sd_teste;
   -- Troca de core (multiboot): botao A carregado 3 s -> RECONFIG_N a 0. A FPGA carrega o
   -- bitstream do endereco gravado neste (multiboot_spi_flash_address, 0x100000 = Next).
@@ -649,7 +649,7 @@ begin
   end process;
   O_reconfig_n <= '0' when mb_rn = '0' else 'Z';   -- dreno aberto (o TP1 tem pull-up de 4,7k)
 
-  O_led3   <= not (arr_esc(0) or alt_k) when TIMMY else not sd_teste2;   -- Timmy: LED 3 tambem = uma tecla Windows carregada  -- Timmy: LEDs dos pinos 17-20 = escolha bits 0-3           -- LED 3 aceso = 4 bytes na mesma palavra (DQM) certos
+  O_led3   <= not (arr_esc(0) or alt_k) when TIMEXTENSO else not sd_teste2;   -- Timextenso: LED 3 tambem = uma tecla Windows carregada  -- Timextenso: LEDs dos pinos 17-20 = escolha bits 0-3           -- LED 3 aceso = 4 bytes na mesma palavra (DQM) certos
   O_led(1) <= O_sd_cs_n;               -- aceso enquanto o cartao SD esta' seleccionado
   -- 2026-10-22: ponte para o ESP32-S3 (por agora so' registos de teste)
   esp: entity work.ponte_esp port map (clk => clk54, esp_clk => I_esp_clk, esp_cs => I_esp_cs, esp_dir => I_esp_dir,
@@ -662,7 +662,7 @@ begin
                                        k_mat => k_mat, k_rst => k_rst, k_nmi => k_nmi,
                                        z_wr => mb_wr, z_rd => mb_rd, z_sel => mb_sel, z_d => mb_d, z_q => mb_q, u_wr => ua_wr, u_rd => ua_rd, u_dat => ua_dat, u_q => ua_q,
                                        k_in => mat_fis, k_cap => k_cap, k_turbo => k_turbo, k_gspara => k_gspara, k_ay3 => k_ay3, k_vel => vel_cod, cs_wr => cs_wr, cs_d => cs_d, cs_limpa => cs_limpa, cs_livres => cs_livres, cs_ativa => cs_ativa, k_joy => joy_usb, k_atal => atalho, k_ay => ay_vis, k_jcru => jcru, k_maq => maq_st);
-  sem_timmy_g: if not TIMMY generate esp_ack <= '0'; esp_wack <= '0'; end generate;
+  sem_timextenso_g: if not TIMEXTENSO generate esp_ack <= '0'; esp_wack <= '0'; end generate;
   cas: entity work.cassete port map (clk => clk54, t_ce => ce_t, limpa => cs_limpa, wr => cs_wr, d => cs_d,
                                      livres => cs_livres, ativa => cs_ativa, ear => cs_ear);
 end architecture;

@@ -14,7 +14,7 @@
 ; v6 (2026-10-29): a posicao (60h) so' conta depois de o GS a por a 0 (a cancao nova a andar): logo a seguir
 ;   ao 31h a primeira leitura podia trazer a posicao do modulo anterior e a seguinte (0) parecia "voltou para
 ;   tras" -> o 2.o MOD acabava em 1-2 s. Espera ate' 2 s pelo 0; e no fim diz em que posicao acabou (mensagem).
-; (Timmy, 2026-10-26)
+; (Timextenso, 2026-10-26)
 
                     include "esxdos.inc"
 
@@ -34,7 +34,7 @@ GS_DAT              equ 0B3h
                     db "BP",0,0
                     db 0                ; flags
                     db 0                ; flags2
-                    db "MOD (General Sound) - Timmy",0
+                    db "MOD (GS) - Timextenso",0
 
 Inicio              push ix
                     push iy

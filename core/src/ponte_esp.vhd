@@ -6,7 +6,7 @@
 --   02h ler: 2 ciclos de espera (flancos 3 e 4); a FPGA prepara cada byte no flanco de subida anterior
 --        ao que o ESP usa para o ler (um periodo de folga), endereco + 1
 -- Registos:
---   00-0F memoria de teste (ler/escrever); 10-14 "TIMMY" (so' ler)
+--   00-0F memoria de teste (ler/escrever); 10-14 "TIMMY" (so' ler; o nome antigo do Timextenso, fica: e' o que o ESP procura)
 --   20 bit 0 = linha IRQ; 21 contador que sobe a cada ~1,2 ms (so' ler)
 --   22 estado (so' ler): bit 0 = 1 fila vazia (tudo escrito), bit 1 = fila cheia,
 --      bit 2 = perdeu-se um byte (fila cheia); escrever qualquer coisa no 22 limpa o bit 2
@@ -54,7 +54,7 @@
 --      A ponte volta a ouvir sozinha quando o CS sobe depois do 07h. O 22 bit 0 conta tambem com esta fila.
 --   3B (ler) F5 (bit 0) e F6 (bit 1), guardados ate' ler (o modo musica do ESP)
 --   23 (escrever) / 24 (ler, o endereco nao avanca) os AY: 16 bytes, AY 1 e AY 2: periodo A, B, C (12 bits:
---      byte baixo, nibble alto), volume A, B, C (5 bits) - ver core_timmy (ay_vis)
+--      byte baixo, nibble alto), volume A, B, C (5 bits) - ver core_timextenso (ay_vis)
 --   58-5A bytes escritos na ponte rapida (03h), 5B-5C os fora da sequencia, 5D-5F bytes lidos (04h);
 --   5F escrita bit 0 = esta ponte fica surda (ate' ao comando 05h da ponte rapida, ou 1,2 s)
 --   6E escrita: impulsos da cassete (2 bytes cada); leitura bit 0 = a tocar. 6F escrita bit 0 = parar; leitura = livres

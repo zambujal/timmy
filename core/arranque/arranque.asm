@@ -1,4 +1,4 @@
-; arranque.asm - Timmy (Tang Nano 20K): programa de arranque que carrega as ROMs do cartao SD
+; arranque.asm - Timextenso (Tang Nano 20K): programa de arranque que carrega as ROMs do cartao SD
 ;
 ;   Corre no lugar do esxDOS: ao ligar, a DivTIESUS mapeia a "EEPROM" (8K, este programa) em
 ;   0000-1FFF. Le do cartao (FAT32 ou FAT16, com ou sem tabela de particoes):
@@ -6,7 +6,7 @@
 ;       /SYS/ROMS/ESXMMC.BIN    8192 bytes   o esxDOS (ESXMMC.BIN do pacote do esxDOS)
 ;   para a RAM (8000h e C000h), copia-os para as duas memorias da FPGA pelo registo ZX-UNO A4h
 ;   (porta FD3B com FC3B = A4h: bit 0 = alvo, 0 = ROM, 1 = esxDOS; bit 7 = fim) e a FPGA reinicia
-;   o Z80, que arranca como um Timmy normal. Com erro, mostra-o no ecra e tenta outra vez.
+;   o Z80, que arranca como um Timextenso normal. Com erro, mostra-o no ecra e tenta outra vez.
 ;   O cartao e' lido pelo SPI da DivMMC (portas E7h e EBh, como o esxDOS faz).
 ;   Letra propria (fonte.asm). Nao ha' aqui nada tirado de ROMs com direitos.
 ;
@@ -1072,7 +1072,7 @@ nome_roms: db "ROMS       "
 nome_rom:  db "TC2048  ROM"
 nome_esx:  db "ESXMMC  BIN"
 
-txt_titulo:    db "TIMMY - ARRANQUE",0
+txt_titulo:    db "TIMEXTENSO - ARRANQUE",0
 txt_a_ler:     db "A LER O CARTAO SD...        ",0
 txt_ok:        db "ROMS CARREGADAS: A ARRANCAR ",0
 txt_outra_vez: db "TENTO OUTRA VEZ DAQUI A 2 S ",0

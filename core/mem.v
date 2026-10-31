@@ -6,7 +6,7 @@
 // ROM HOME 16K
 
 
-// Timmy: as ROMs vem do cartao ao ligar (os cores antigos core_timex/core_penta usavam modulos rom_* com
+// Timextenso: as ROMs vem do cartao ao ligar (os cores antigos core_timex/core_penta usavam modulos rom_* com
 // $readmemh de ROMs com direitos; ficaram de fora deste repositorio).
 // ram_home comeca vazia; ram_esx comeca com o programa
 // de arranque (arranque.hex, nosso), no lugar do esxDOS, que ele proprio la' escreve depois.

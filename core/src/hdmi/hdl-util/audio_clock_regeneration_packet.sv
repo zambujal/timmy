@@ -1,11 +1,11 @@
-// (Timmy, 2026) alterado: VIDEO_RATE inteiro e contador de 20 bits (ver as linhas marcadas)
+// (Timextenso, 2026) alterado: VIDEO_RATE inteiro e contador de 20 bits (ver as linhas marcadas)
 // Implementation of HDMI audio clock regeneration packet
 // By Sameer Puri https://github.com/sameer
 
 // See HDMI 1.4b Section 5.3.3
 module audio_clock_regeneration_packet
 #(
-    parameter int VIDEO_RATE = 25200000,   // (Timmy) inteiro em vez de real: sem contas com reais no Gowin
+    parameter int VIDEO_RATE = 25200000,   // (Timextenso) inteiro em vez de real: sem contas com reais no Gowin
     parameter int AUDIO_RATE = 48e3
 )
 (
@@ -34,12 +34,12 @@ begin
         clk_audio_counter <= clk_audio_counter + 1'd1;
 end
 
-initial clk_audio_counter_wrap = 1'b0;   // (Timmy) valor inicial
+initial clk_audio_counter_wrap = 1'b0;   // (Timextenso) valor inicial
 logic [1:0] clk_audio_counter_wrap_synchronizer_chain = 2'd0;
 always_ff @(posedge clk_pixel)
     clk_audio_counter_wrap_synchronizer_chain <= {internal_clk_audio_counter_wrap, clk_audio_counter_wrap_synchronizer_chain[1]};
 
-localparam int CYCLE_TIME_STAMP_COUNTER_WIDTH = 20; // (Timmy) 20 bits chegam para qualquer relogio do ponto (o CTS mede-se)
+localparam int CYCLE_TIME_STAMP_COUNTER_WIDTH = 20; // (Timextenso) 20 bits chegam para qualquer relogio do ponto (o CTS mede-se)
 
 logic [19:0] cycle_time_stamp = 20'd0;
 logic [CYCLE_TIME_STAMP_COUNTER_WIDTH-1:0] cycle_time_stamp_counter = CYCLE_TIME_STAMP_COUNTER_WIDTH'(0);
@@ -48,7 +48,7 @@ begin
     if (clk_audio_counter_wrap_synchronizer_chain[1] ^ clk_audio_counter_wrap_synchronizer_chain[0])
     begin
         cycle_time_stamp_counter <= CYCLE_TIME_STAMP_COUNTER_WIDTH'(0);
-        cycle_time_stamp <= cycle_time_stamp_counter + 20'(1);   // (Timmy) contador ja' com 20 bits
+        cycle_time_stamp <= cycle_time_stamp_counter + 20'(1);   // (Timextenso) contador ja' com 20 bits
         clk_audio_counter_wrap <= !clk_audio_counter_wrap;
     end
     else

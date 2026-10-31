@@ -1,18 +1,18 @@
-// hdmi_hdlutil.sv: o HDMI com som do Timmy (desde 2026-10-31) - a biblioteca hdl-util (Sameer Puri,
+// hdmi_hdlutil.sv: o HDMI com som do Timextenso (desde 2026-10-31) - a biblioteca hdl-util (Sameer Puri,
 //   github.com/hdl-util/hdmi, MIT ou Apache-2.0; usa-se a MIT; ficheiros em hdl-util/), na versao do NanoMig
-//   do djnice (github.com/djnice/NanoMig, tag aga-tn20k-2). Trocou o hdmi_tx.vhd anterior, feito para o Timmy,
+//   do djnice (github.com/djnice/NanoMig, tag aga-tn20k-2). Trocou o hdmi_tx.vhd anterior, feito para o Timextenso,
 //   porque esta da' som numa TV LG antiga onde o nosso nao dava (nem com AIF, estado do canal e ACR iguais aos
 //   do NextNano).
 //   Este ficheiro e' o hdmi.sv dessa biblioteca com o gerador de tempos trocado por contadores presos ao
-//   DE do video_timex: o Timmy continua a fazer a imagem e os sincronismos; daqui saem os simbolos TMDS
+//   DE do video_timex: o Timextenso continua a fazer a imagem e os sincronismos; daqui saem os simbolos TMDS
 //   (os OSER10 continuam no top.vhd). O resto (ilhas de dados, pacotes, ACR, amostras) e' o da biblioteca.
 //   Audio: as amostras chegam com um "tog" (muda a cada amostra, 48 kHz, outro relogio); aqui faz-se
 //   um flanco de subida de clk_audio por amostra, com a amostra ja' copiada e parada.
-//   Alteracoes do Timmy nos ficheiros da biblioteca marcadas "(Timmy)": VIDEO_RATE inteiro, contador do CTS
+//   Alteracoes do Timextenso nos ficheiros da biblioteca marcadas "(Timextenso)": VIDEO_RATE inteiro, contador do CTS
 //   com 20 bits, valor inicial do clk_audio_counter_wrap, codificador TMDS em dois andares (74,25 MHz).
 //   Como no fork, o bit B do bloco IEC 60958 sai de 192 e 196 em 196 amostras (o contador do packet_picker
 //   com <=); fica igual ao fork porque e' o que esta' provado nessa TV.
-//   O Timmy compila com -verilog_std v2001, por isso o que entra no Gowin e' o hdmi_hdlutil.v:
+//   O Timextenso compila com -verilog_std v2001, por isso o que entra no Gowin e' o hdmi_hdlutil.v:
 //     sv2v --top=hdmi_hdlutil hdmi_hdlutil.sv hdl-util/*.sv > hdmi_hdlutil.v
 
 module hdmi_hdlutil
@@ -149,8 +149,8 @@ packet_picker #(
     .IT_CONTENT(1'b1),
     .AUDIO_RATE(AUDIO_RATE),
     .AUDIO_BIT_WIDTH(AUDIO_BIT_WIDTH),
-    .VENDOR_NAME({"Timmy", 24'd0}),
-    .PRODUCT_DESCRIPTION({"Timex", 88'd0}),
+    .VENDOR_NAME({"Timex", 24'd0}),
+    .PRODUCT_DESCRIPTION({"Timextenso", 48'd0}),
     .SOURCE_DEVICE_INFORMATION(8'h08)       // 08h = jogos
 ) packet_picker (.clk_pixel(clk_pixel), .clk_audio(clk_audio), .reset(reset), .cea(cea), .video_field_end(video_field_end), .packet_enable(packet_enable), .packet_pixel_counter(packet_pixel_counter), .audio_sample_word(audio_sample_word), .header(header), .sub(sub));
 logic [8:0] packet_data;

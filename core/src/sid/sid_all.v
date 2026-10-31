@@ -3,7 +3,7 @@
 // sid_tables substituido por sid_tables_8580 (so' o 8580, tabelas em case).
 `default_nettype wire
 module sid_dac (vin, vout);
-	// so' o 6581 usa a DAC nao linear; no Timmy os dois SID sao 8580: passa direito
+	// so' o 6581 usa a DAC nao linear; no Timextenso os dois SID sao 8580: passa direito
 	parameter BITS = 12;
 	input wire [BITS - 1:0] vin;
 	output wire [BITS - 1:0] vout;
@@ -734,7 +734,7 @@ module sid_top (
 	assign audio_r = audio[N - 1];
 endmodule
 // sid_tables_8580.v: as tabelas do sid_tables.sv (C64_MiSTer, GPL) so' para o 8580, em Verilog-2001
-// simples (case -> logica, sem BSRAM; a BSRAM do Timmy esta' cheia). Filtro do 8580: F0 = Fc*5 (sem tabela).
+// simples (case -> logica, sem BSRAM; a BSRAM do Timextenso esta' cheia). Filtro do 8580: F0 = Fc*5 (sem tabela).
 module sid_tables (
   input clock, input mode,
   input [11:0] acc_t,

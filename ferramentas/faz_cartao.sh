@@ -1,6 +1,6 @@
 #!/bin/bash
-# faz_cartao.sh: prepara um cartao do Timmy (Linux). Uso:
-#   ./faz_cartao.sh /run/media/$USER/TIMMY2 [pacote_esxdos.zip]
+# faz_cartao.sh: prepara um cartao do Timextenso (Linux). Uso:
+#   ./faz_cartao.sh /run/media/$USER/TIMEXTENSO [pacote_esxdos.zip]
 # 1. (se dado) o esxDOS: BIN, SYS, TMP do zip (esxdos.org)
 # 2. o navegador do Bob Fossil (NMI.SYS + BIN/BPLUGINS), descarregado de thefossilrecord.co.uk
 # 3. a pasta cartao/ deste repositorio por cima
@@ -35,7 +35,7 @@ mkdir -p "$CARTAO/BIN/BPLUGINS" "$CARTAO/SYS"
 cp -r "$F/BPLUGINS/." "$CARTAO/BIN/BPLUGINS/"
 cp "$N" "$CARTAO/SYS/NMI.SYS"
 
-echo "== cartao/ do Timmy por cima"
+echo "== cartao/ do Timextenso por cima"
 cp -r "$REPO/cartao/." "$CARTAO/"
 
 echo "== plugin TAP do TC2068 (BIN/PLUG2068/TAP)"

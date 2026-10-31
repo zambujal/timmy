@@ -1,4 +1,4 @@
--- divmmc.vhd: DivMMC (esxDOS) para o core do Timmy na Tang Nano 20K.
+-- divmmc.vhd: DivMMC (esxDOS) para o core do Timextenso na Tang Nano 20K.
 --   Segue o divmmc_mcleod.v do DivTIESUS (Miguel Angel Rodriguez Jodar, GPL v3),
 --   reescrito em VHDL e sincrono ao relogio do core (54 MHz).
 --   Porta E3 (escrita): bit 7 CONMEM, bit 6 MAPRAM (so' liga), bits 5-0 pagina de 8K.

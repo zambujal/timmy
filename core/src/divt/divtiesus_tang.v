@@ -3,7 +3,7 @@
 // mudam so' as pontas:
 //   - barramento de dados: din (do Z80) e dout/doe (para o Z80), sem 3 estados;
 //   - romcs, romoe1 (/BE) e nmi_n saem como sinais normais (o core decide);
-//   - notplus3 = 1 (o Timmy nao e' um +2A/+3); jumper E fechado.
+//   - notplus3 = 1 (o Timextenso nao e' um +2A/+3); jumper E fechado.
 // A SRAM e a EEPROM da placa sao a SDRAM e uma ROM do core: o core usa os sinais
 // eeprom_oe_n, sram_oe_n, sram_we_n e sram_hiaddr (pagina fisica de 8K da SRAM de 512K).
 

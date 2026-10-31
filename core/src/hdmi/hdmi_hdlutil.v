@@ -168,8 +168,8 @@ module hdmi_hdlutil (
 		.IT_CONTENT(1'b1),
 		.AUDIO_RATE(AUDIO_RATE),
 		.AUDIO_BIT_WIDTH(AUDIO_BIT_WIDTH),
-		.VENDOR_NAME({"Timmy", 24'd0}),
-		.PRODUCT_DESCRIPTION({"Timex", 88'd0}),
+		.VENDOR_NAME({"Timex", 24'd0}),
+		.PRODUCT_DESCRIPTION({"Timextenso", 48'd0}),
 		.SOURCE_DEVICE_INFORMATION(8'h08)
 	) packet_picker(
 		.clk_pixel(clk_pixel),

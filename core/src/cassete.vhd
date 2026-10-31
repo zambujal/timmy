@@ -1,4 +1,4 @@
--- cassete.vhd - leitor de cassete do Timmy (2026-10-24)
+-- cassete.vhd - leitor de cassete do Timextenso (2026-10-24)
 -- O ESP manda impulsos (palavras de 16 bits) para uma fila de 256; aqui o EAR muda no tempo certo,
 -- contado em T-states do Z80 (t_ce = um T do Z80 sem espera): em turbo a cassete anda com o Z80.
 --   bit 15 = 0         : espera bits 14-0 T e depois vira o EAR (impulso)

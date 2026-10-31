@@ -4,7 +4,7 @@
 //    (https://github.com/mcleod-ideafix/divtiesus), under the same licence,
 //    the GNU General Public License version 3.
 //
-//    Makes the onboard SRAM serve the Spectrum 128K RAM banks on a Timmy
+//    Makes the onboard SRAM serve the Spectrum 128K RAM banks on a Timextenso
 //    (TC2048 clone) whose SCLD is the CPLD replacement with the 128K mode.
 //    It needs a 512K SRAM: the banks use divMMC pages 16 to 31.
 //
@@ -19,7 +19,7 @@
 //     - 8000h-BFFFh is bank 2, from the SRAM, so that bank 2 at C000h is
 //       the same memory;
 //     - C000h-FFFFh is the bank in 7FFD, from the SRAM, except banks 5 and
-//       7: those live in the Timmy's video RAM (4464), where the SCLD can
+//       7: those live in the Timextenso's video RAM (4464), where the SCLD can
 //       show them on screen, and the SCLD serves them.
 //    Any other value with some of those bits set: the blocks taken away
 //    are served as plain RAM (bank 2 at 8000h, bank 0 at C000h), so the
@@ -32,7 +32,7 @@
 //    TC2068 mode (ZXUNO register DDh, bit 0; 0 at power on and after a master
 //    reset, so with nothing written this design behaves exactly as before, also
 //    on a real TC2068 with its own EXROM). Set only by the NMI browser on the
-//    Timmy, which has no EXROM chip:
+//    Timextenso, which has no EXROM chip:
 //     - EXROM: an 8K block that port F4 takes away from the home bank, with
 //       port FF bit 7 = 1 (EXROM, not DOCK), reads divMMC page 36 (the 8K
 //       EXROM of the TC2068). Read only. Not in 128K mode.
@@ -52,7 +52,7 @@
 //    (bank 7 too in 128K mode), then OUT F3 with bit 6. To switch off: OUT F3 with
 //    bit 6 = 0 first, then DDh bit 1 = 0. A master reset does not change them.
 //    No NMI in this mode (the ROM is not a Spectrum ROM): a master reset
-//    (RESET with NMI held) clears it and the Timmy starts as a TC2048.
+//    (RESET with NMI held) clears it and the Timextenso starts as a TC2048.
 //    The copy of FF bit 7 follows the SCLD: it is not written while port F3
 //    bit 5 is set (floating bus on FF, FF writes ignored by the SCLD).
 

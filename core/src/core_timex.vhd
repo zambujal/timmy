@@ -1,5 +1,5 @@
 -- core_timex.vhd: Z80 (T80) + memoria e portas do Timex TC2048 / TC2068.
---   Portas como no SCLD do Timmy (v13), descodificadas pelo byte baixo:
+--   Portas como no SCLD do Timextenso (v13), descodificadas pelo byte baixo:
 --     FE  escrita: borda (bits 2-0)   leitura: 0 & EAR & 0 & teclas
 --     FF  escrita/leitura: bit 7 EXROM(1)/DOCK(0), bit 6 INT desligada,
 --         bits 5-3 cor do hi-res, bits 2-0 modo do ecra

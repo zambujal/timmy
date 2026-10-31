@@ -1,4 +1,4 @@
--- gs.vhd: General Sound para o Timmy da Tang (em todas as maquinas).
+-- gs.vhd: General Sound para o Timextenso da Tang (em todas as maquinas).
 --   Traducao para VHDL do gs.v do core ZX Spectrum do MiSTer (Sorgelig, GPL), com a memoria
 --   toda de fora (na SDRAM: ROM na pagina 0, RAM nas paginas 1-63, 32K cada).
 --

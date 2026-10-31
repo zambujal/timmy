@@ -1,4 +1,4 @@
-; GO2068: dot command para o DivTIESUS / Timmy: arranca o TC2068.
+; GO2068: dot command para o DivTIESUS / Timextenso: arranca o TC2068.
 ; Faz o mesmo que o NAV (menu das maquinas -> TC2068): carrega /BIN/2068.rom
 ;   24K: HOME 16K -> paginas 32,33 (e 34,35), EXROM 8K -> 36
 ;   32K: o mesmo e o firmware esxDOS do 2068 (ESX2068) -> 37

@@ -84,7 +84,7 @@ use work.T80_Pack.all;
 
 entity T80 is
 	generic(
-		R800_MULU : boolean := false;  -- (2026-10-23) o multiplicador do R800: sem ele (o Timmy nao o usa) sai do caminho critico
+		R800_MULU : boolean := false;  -- (2026-10-23) o multiplicador do R800: sem ele (o Timextenso nao o usa) sai do caminho critico
 		Mode   : integer := 0;  -- 0 => Z80, 1 => Fast Z80, 2 => 8080, 3 => GB
 		IOWait : integer := 0;  -- 0 => Single cycle I/O, 1 => Std I/O cycle
 		Flag_C : integer := 0;

@@ -30,11 +30,11 @@
 ;          o browser do NMI usam as paginas 0-15)
 ;          bancos 0-7 -> 16-31 (precisa a SRAM de 512K)
 ; Modo 128K: F4 = F0 (SCLD e DivTIESUS seguem o mesmo porto). Bancos 5 e 7
-; na RAM de video do Timmy (4464 + BNK), os outros na SRAM do DivTIESUS.
+; na RAM de video do Timextenso (4464 + BNK), os outros na SRAM do DivTIESUS.
 ; Reset + NMI desliga o modo ROM em RAM; os bancos so' saem com
 ; OUT 65524,0 ou desligando.
 
-; GO1024 (-DGO1024): Pentagon 1024 no Timmy da Tang: como o .go256 e ainda o registo
+; GO1024 (-DGO1024): Pentagon 1024 no Timextenso da Tang: como o .go256 e ainda o registo
 ; ZXUNO DDh bit 2 = 1 (1024K) e EFF7 = 0: o 7FFD usa os bits 6, 7 e 5 como bits 3, 4 e 5
 ; do banco (64 bancos de 16K) e o bit 5 deixa de ser o trinco. O EFF7 bit 2 = 1 volta ao 128K.
                     IFDEF GO1024
@@ -432,7 +432,7 @@ CodigoReset         di
                     ldir
                     xor a               ; CONMEM desligado
                     out (DIVCTRL),a
-                    ; o modo ROM em RAM (DF bit 7) so' se desliga com RESET+NMI: no Timmy da Tang o
+                    ; o modo ROM em RAM (DF bit 7) so' se desliga com RESET+NMI: no Timextenso da Tang o
                     ; registo ZXUNO A2h = 52h fa'-lo sozinho; no clone espera-se pelo botao
                     ld bc,ZXUNOADDR
                     ld a,0A2h

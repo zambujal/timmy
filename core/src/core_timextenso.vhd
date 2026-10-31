@@ -1,4 +1,4 @@
--- core_timmy.vhd: o Timmy (clone do TC2048) inteiro na Tang: Z80 + SCLD v13 + DivTIESUS v13.
+-- core_timextenso.vhd: o Timextenso (clone do TC2048) inteiro na Tang: Z80 + SCLD v13 + DivTIESUS v13.
 --   DivTIESUS: os ficheiros Verilog do v13 (divt/*.v), via divtiesus_tang.v. A SRAM de 512K
 --     e' a SDRAM a partir de 1 MB (pagina fisica de 8K = sram_hiaddr); a EEPROM e' o rom_esx.
 --   SCLD: a parte do scld.vhd v13 que nao e' DRAM, reescrita para o relogio do core:
@@ -24,7 +24,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity core_timmy is
+entity core_timextenso is
   generic (COM_SID : boolean := true);              -- false: sem os dois SID (xxCF)
   port (
     clk      : in  std_logic;                     -- 54 MHz (core e SDRAM)
@@ -126,7 +126,7 @@ entity core_timmy is
   );
 end entity;
 
-architecture rtl of core_timmy is
+architecture rtl of core_timextenso is
   component T80se
     generic (Mode : integer := 0; T2Write : integer := 0; IOWait : integer := 1);
     port (RESET_n, CLK_n, CLKEN, WAIT_n, INT_n, NMI_n, BUSRQ_n : in std_logic;
@@ -143,7 +143,7 @@ architecture rtl of core_timmy is
     port (clk : in std_logic; a : in std_logic_vector(12 downto 0); we : in std_logic;
           d : in std_logic_vector(7 downto 0); q : out std_logic_vector(7 downto 0));
   end component;
-  component sid_timmy
+  component sid_timextenso
     port (clk, reset, ce_1m : in std_logic; cs : in std_logic_vector(1 downto 0); we : in std_logic;
           addr : in std_logic_vector(4 downto 0); din : in std_logic_vector(7 downto 0);
           dout : out std_logic_vector(7 downto 0); mode : in std_logic_vector(1 downto 0);
@@ -884,7 +884,7 @@ begin
     elsif a_l(15 downto 14) = "00" then
       if dv_romcs_l = '1' then di <= x"FF";            -- a DivTIESUS calou a ROM e nao serve nada
       elsif home_l = '1' then di <= q_rom;             -- HOME
-      else di <= x"FF"; end if;                        -- DOCK / EXROM: o Timmy nao tem
+      else di <= x"FF"; end if;                        -- DOCK / EXROM: o Timextenso nao tem
     elsif vram_l = '1' then
       di <= q_scr;
     elsif interna_l = '1' then
@@ -1001,7 +1001,7 @@ begin
   sid_cs(1) <= '1' when (io_rd = '1' or io_wr = '1') and a(7 downto 0) = x"CF" and a(13) = '1' else '0';
   sid_rst <= not rst_n_i;
   g_sid: if COM_SID generate
-    sid: sid_timmy port map (clk => clk, reset => sid_rst, ce_1m => sid_ce, cs => sid_cs, we => io_wr,
+    sid: sid_timextenso port map (clk => clk, reset => sid_rst, ce_1m => sid_ce, cs => sid_cs, we => io_wr,
                              addr => a(12 downto 8), din => do_cpu, dout => sid_q, mode => "11",
                              audio_l => sid_l, audio_r => sid_r);
   end generate;

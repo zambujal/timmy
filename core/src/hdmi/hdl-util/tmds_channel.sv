@@ -1,4 +1,4 @@
-// (Timmy, 2026) alterado: codificador em dois andares (ver "(Timmy)" abaixo)
+// (Timextenso, 2026) alterado: codificador em dois andares (ver "(Timextenso)" abaixo)
 // Implementation of HDMI Spec v1.4a Section 5.4: Encoding, Section 5.2.2.1: Video Guard Band, Section 5.2.3.3: Data Island Guard Bands.
 // By Sameer Puri https://github.com/sameer
 
@@ -28,10 +28,10 @@ logic [9:0] video_coding;
 assign video_coding = q_out;
 
 logic [3:0] N1D;
-logic signed [4:0] N1c;        // (Timmy) contagem do 1.o andar
-logic signed [4:0] N1q_m07;    // (Timmy) registado
+logic signed [4:0] N1c;        // (Timextenso) contagem do 1.o andar
+logic signed [4:0] N1q_m07;    // (Timextenso) registado
 logic signed [4:0] N0q_m07;
-logic [8:0] q_mc;              // (Timmy) q_m do 1.o andar; q_m e' o registado
+logic [8:0] q_mc;              // (Timextenso) q_m do 1.o andar; q_m e' o registado
 always_comb
 begin
     N1D = video_data[0] + video_data[1] + video_data[2] + video_data[3] + video_data[4] + video_data[5] + video_data[6] + video_data[7];
@@ -72,7 +72,7 @@ begin
     end
 end
 
-// (Timmy) o codificador em dois andares (a 74,25 MHz o XOR, a contagem e a soma do saldo nao cabiam num ciclo):
+// (Timextenso) o codificador em dois andares (a 74,25 MHz o XOR, a contagem e a soma do saldo nao cabiam num ciclo):
 //   aqui regista-se o 1.o andar e, com ele, o modo e os dados dos outros modos, para tudo sair alinhado
 logic [2:0] mode_r = 3'd0;
 logic [1:0] control_data_r = 2'd0;

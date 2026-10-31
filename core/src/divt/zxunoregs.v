@@ -1,4 +1,4 @@
-// Tang Nano 20K (Timmy): copia do DivTIESUS v13; unica mudanca: o `include "config.vh" substituido pelos dois localparam.
+// Tang Nano 20K (Timextenso): copia do DivTIESUS v13; unica mudanca: o `include "config.vh" substituido pelos dois localparam.
 `timescale 1ns / 1ns
 `default_nettype none
 

@@ -1,4 +1,4 @@
--- hdmi_tx.vhd: a entidade hdmi_tx do Timmy (as mesmas portas de sempre, o top.vhd nao muda); por dentro e'
+-- hdmi_tx.vhd: a entidade hdmi_tx do Timextenso (as mesmas portas de sempre, o top.vhd nao muda); por dentro e'
 --   o HDMI da hdl-util (hdmi_hdlutil.v, gerado com o sv2v a partir de hdmi_hdlutil.sv e hdl-util/*.sv).
 library ieee;
 use ieee.std_logic_1164.all;

@@ -1,4 +1,4 @@
--- sysctrl.vhd: alvo SYS do FPGA-Companion (so' o que o Timmy precisa).
+-- sysctrl.vhd: alvo SYS do FPGA-Companion (so' o que o Timextenso precisa).
 --   A partir do sysctrl.v do MiSTeryNano (MiSTle-Dev, GPL). Comandos:
 --     0 estado: devolve 5C 42 00 (core generico)    5 IRQ: confirma / pendentes
 --     3 botoes da Tang                              6 origem do IRQ (arranque a frio)

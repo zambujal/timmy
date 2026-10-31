@@ -1,8 +1,8 @@
-# Timmy — Timex TC2068 and TC2048 (and more) on a Tang Nano 20K
+# Timextenso — Timex TC2068 and TC2048 (and more) on a Tang Nano 20K
 
 *Em português: [README.md](README.md)*
 
-Timmy is a VHDL core for the **Sipeed Tang Nano 20K** board (Gowin GW2AR-18 FPGA) that behaves as a
+Timextenso is a VHDL core for the **Sipeed Tang Nano 20K** board (Gowin GW2AR-18 FPGA) that behaves as a
 **Timex TC2068** and **TC2048**, with **HDMI 720p50** output, a **microSD** card with **esxDOS** (DivMMC),
 a USB keyboard and sound over HDMI. It boots as a TC2048 and, from the card browser, switches to a
 **TC2068** (with the EXROM, the Timex screen modes — hi-colour, 512x192 hi-res — and esxDOS in that mode too),
@@ -64,7 +64,7 @@ card, which each user puts there (see "The card").
    - `BIN/PLUG2068/TAP` — TAP plugin for the TC2068 (**without it TAPs do not load from the browser in TC2068
      mode**). It is not in the repository because it is made from Bob Fossil's TAP plugin; make it with
      `python3 fontes/plug2068/faz_plug2068.py BIN/BPLUGINS/TAP BIN/PLUG2068/TAP` (`faz_cartao.sh` already does it; what it is and why: `fontes/plug2068/LEIAME.md`).
-   Without them Timmy is a TC2048 with esxDOS; the browser tells you when one is missing.
+   Without them Timextenso is a TC2048 with esxDOS; the browser tells you when one is missing.
 7. Games go in folders at the root (for example `GAMES/`, or one per letter).
 8. **Finally, with the card in the PC, run `ferramentas/cartao.py`** (section 6): it builds the indexes that
    give the browser the long names, the letter column and the top bar with the machine menu. Without them the
@@ -74,7 +74,7 @@ On Linux, steps 2, 3, 4 and 8 (and `BIN/PLUG2068/TAP`) are done in one go by `fe
 zip itself; you put the ROMs in afterwards, or before):
 
 ```
-cd timmy/ferramentas && ./faz_cartao.sh /run/media/$USER/CARD_NAME ~/Downloads/esxdos089.zip
+cd timextenso/ferramentas && ./faz_cartao.sh /run/media/$USER/CARD_NAME ~/Downloads/esxdos089.zip
 ```
 
 In short, the root of the card ends up like this:
@@ -90,7 +90,7 @@ GAMES/ ...  whatever you like
 
 ## 3. Flashing the core into the Tang Nano 20K
 
-There are two ways to get the core: **use the prebuilt one** (`timmy.fs`, in the **Releases** section of
+There are two ways to get the core: **use the prebuilt one** (`timextenso.fs`, in the **Releases** section of
 this repository) or **build it** with Gowin EDA (section 3.4). Either way the `.fs` file is written to the
 board's flash and stays there until another one is written.
 
@@ -107,9 +107,9 @@ The board connects to the PC over USB-C. With the factory BL616 firmware it show
 3. Double-click the device row ("Operation" column) to open the configuration:
    - **Access Mode:** `External Flash Mode`
    - **Operation:** `exFlash Erase, Program`
-   - **FS File:** `timmy.fs`
+   - **FS File:** `timextenso.fs`
    - **External Flash:** `Generic Flash`, address `0x000000`
-4. **Program** (the flash button). It takes a few seconds. Power the Tang off and on: Timmy boots.
+4. **Program** (the flash button). It takes a few seconds. Power the Tang off and on: Timextenso boots.
 
 ### 3.2 Windows, with openFPGALoader (free tool)
 
@@ -119,14 +119,14 @@ The board connects to the PC over USB-C. With the factory BL616 firmware it show
    *Options → List All Devices*, pick **interface 0** of the Tang's programmer (FT2232-compatible) and install
    WinUSB. (This takes the interface away from the FTDI driver; the Gowin Programmer stops seeing it until the
    FTDI driver is restored, also with Zadig.)
-3. In the same terminal: `openFPGALoader -b tangnano20k -f timmy.fs`
+3. In the same terminal: `openFPGALoader -b tangnano20k -f timextenso.fs`
 
 ### 3.3 Linux, with openFPGALoader
 
 ```
 sudo apt install openfpgaloader                      # Debian / Ubuntu
 sudo dnf copr enable mobicarte/openFPGALoader && sudo dnf install openFPGALoader   # Fedora
-openFPGALoader -b tangnano20k -f timmy.fs
+openFPGALoader -b tangnano20k -f timextenso.fs
 ```
 
 "unable to open ftdi device" is a USB permission problem: run with `sudo` or install the udev rules that
@@ -135,14 +135,14 @@ same as on Windows.
 
 ### 3.4 Building the core (optional)
 
-**TV that does not accept 720p?** In the `core/` folder, `./faz_576p.sh` gives `core/timmy_576p.fs`: the same
+**TV that does not accept 720p?** In the `core/` folder, `./faz_576p.sh` gives `core/timextenso_576p.fs`: the same
 core at 576p50 (4:3). The ESP menu does not look right at 576p.
 
 
 With Gowin EDA (1.9.11 or newer; the Education edition is enough), in the `core/` folder:
 
 ```
-gw_sh timmy.tcl
+gw_sh timextenso.tcl
 ```
 
 It takes about 10 minutes on an ordinary PC (the core fills almost the whole FPGA) and at the end Gowin
@@ -157,7 +157,7 @@ serializers, so it will probably need adapting.
 - Plug in the card, the HDMI and the keyboard; power the Tang over USB-C from a **2 A charger** (or a powered
   hub). A PC USB port is enough for the Tang alone, but not for the Tang with the ESP board: the WiFi current
   spikes pull the 5 V down and the HDMI drops out for an instant. Keep the PC for flashing only.
-- At power-up "TIMMY - ARRANQUE" shows for an instant (the boot program reading the ROMs from the card),
+- At power-up "TIMEXTENSO - ARRANQUE" shows for an instant (the boot program reading the ROMs from the card),
   then esxDOS and the TC2048 BASIC. If something is missing from the card, the screen says what and the
   border turns red; fix the card and it retries by itself every 2 s.
 - **The two buttons on the Tang:**
@@ -298,16 +298,16 @@ plugin, 2068 TAP stub). They are assembled with **sjasmplus**.
 Museum VHDL model, by **Álvaro Lopes** and Paulo Cortesão (CC BY-SA 4.0), which I repaired and completed for
 my SCLD replacement CPLD, the `scld.vhd` of github.com/zambujal/CPLD-XC95288XL-replacement-for-scld-timex
 (IN on ports FF and F4, EXROM/HOME, screen modes, contention, 128K through F4/7FFD, floating bus…), tested
-in a real TC2068. `core_timmy.vhd` holds the non-DRAM part of that SCLD, rewritten for the core's clock;
+in a real TC2068. `core_timextenso.vhd` holds the non-DRAM part of that SCLD, rewritten for the core's clock;
 the rest (ports, modes, timings) is the same.
 
 **The Z80 is the T80** (Daniel Wallner, Sorgelig), **which I repaired and completed in 2026**: while testing
-Timmy I noticed the T80 failed the Z80 flag tests (the Zilog Q register on SCF/CCF: bits 3 and 5 depend on
+Timextenso I noticed the T80 failed the Z80 flag tests (the Zilog Q register on SCF/CCF: bits 3 and 5 depend on
 whether the previous instruction wrote the flags; SET/RES do not count, nor do POP AF and EX AF; a DD/FD
 prefix counts as an instruction that does not write flags). I fixed it in the `T80.vhd` here (comments carry
 the date) and in github.com/zambujal/T80-Q-fix. It passes all the tests.
 
-Own code (GPL v3): the core `core_timmy.vhd` and `top.vhd`, the video (`video_timex`), the glue to the HDMI
+Own code (GPL v3): the core `core_timextenso.vhd` and `top.vhd`, the video (`video_timex`), the glue to the HDMI
 (`src/hdmi/hdmi_hdlutil.sv`, `hdmi_tx.vhd`), the tape, the sound, the card bridge, the boot program and its font, the browser (`fontes/nav`,
 with its own font) and the other card programs, `cartao.py`.
 

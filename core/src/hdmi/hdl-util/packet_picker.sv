@@ -1,10 +1,10 @@
-// (Timmy, 2026) alterado: VIDEO_RATE inteiro
+// (Timextenso, 2026) alterado: VIDEO_RATE inteiro
 // Implementation of HDMI packet choice logic.
 // By Sameer Puri https://github.com/sameer
 
 module packet_picker
 #(
-    parameter int VIDEO_RATE = 0,   // (Timmy) inteiro
+    parameter int VIDEO_RATE = 0,   // (Timextenso) inteiro
     parameter bit IT_CONTENT = 1'b0,
     parameter int AUDIO_BIT_WIDTH = 0,
     parameter int AUDIO_RATE = 0,

@@ -1,5 +1,5 @@
 -- video_timex.vhd: ecra do Timex (TC2048/TC2068) num modo HDMI.
---   Modos (porto FF bits 2-0, como no SCLD do Timmy):
+--   Modos (porto FF bits 2-0, como no SCLD do Timextenso):
 --     bit 0  ecra 1: bitmap em 6000 e atributos em 7800 (em vez de 4000/5800)
 --     bit 1  hi-colour: a cor vem de 6000 com a disposicao do bitmap (1 atributo por linha)
 --     bit 2  hi-res 512: cada coluna mostra o byte de 4000 e depois o de 6000;

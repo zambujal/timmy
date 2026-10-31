@@ -1,4 +1,4 @@
-// Tang Nano 20K - Timmy 2048div (formato da Gowin EDA)
+// Tang Nano 20K - Timextenso 2048div (formato da Gowin EDA)
 // A SDRAM de dentro (O_sdram_*, IO_sdram_dq) nao leva pinos: a Gowin liga-a sozinha.
 IO_LOC  "I_clk" 4;
 IO_PORT "I_clk" IO_TYPE=LVCMOS33 PULL_MODE=UP;

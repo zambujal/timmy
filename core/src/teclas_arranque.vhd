@@ -1,4 +1,4 @@
--- teclas_arranque.vhd: escolha do botao B no core Timmy (sem menu no arranque).
+-- teclas_arranque.vhd: escolha do botao B no core Timextenso (sem menu no arranque).
 --   Cada toque no A passa a' escolha seguinte (em ciclo); os LEDs 4-6 mostram-na em binario.
 --   O B faz a escolha:
 --     0 (LEDs apagados) NMI, como antes      1 .ls          2 .go128

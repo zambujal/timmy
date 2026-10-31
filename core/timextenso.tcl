@@ -1,8 +1,8 @@
-# Timmy timmy na Gowin EDA: gw_sh timmy.tcl  (correr dentro desta pasta)
-# Resultado: impl/pnr/timmy_timmy_1024_1645.fs
+# Timextenso na Gowin EDA: gw_sh timextenso.tcl  (correr dentro desta pasta)
+# Resultado: impl/pnr/timextenso.fs
 set_device GW2AR-LV18QN88C8/I7 -name GW2AR-18C -device_version C
 add_file src/sid/sid_all.v
-add_file src/sid/sid_timmy.v
+add_file src/sid/sid_timextenso.v
 add_file src/divt/divmmc_mcleod.v
 add_file src/divt/tres_e.v
 add_file src/divt/modo.v
@@ -31,7 +31,7 @@ add_file src/teclas_seq.vhd
 add_file src/teclas_auto.vhd
 add_file src/teclas_arranque.vhd
 add_file src/gs.vhd
-add_file src/core_timmy.vhd
+add_file src/core_timextenso.vhd
 add_file src/mcu_spi.vhd
 add_file src/sysctrl.vhd
 add_file src/hid_teclado.vhd
@@ -40,10 +40,10 @@ add_file src/ponte_esp.vhd
 add_file src/cassete.vhd
 add_file src/top.vhd
 add_file mem.v
-add_file timmy.cst
-add_file timmy.sdc
+add_file timextenso.cst
+add_file timextenso.sdc
 set_option -synthesis_tool gowinsynthesis
-set_option -output_base_name timmy_timmy_1024_1645
+set_option -output_base_name timextenso
 set_option -verilog_std v2001
 set_option -vhdl_std vhd2008
 set_option -top_module top
