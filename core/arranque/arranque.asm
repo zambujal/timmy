@@ -23,6 +23,7 @@ REG_CARGA   equ 0A4h
 BUF_HOME    equ 8000h           ; 16K: a ROM
 BUF_ESX     equ 0C000h          ; 8K: o esxDOS
 COPIA       equ 0E000h          ; a rotina final, a correr na RAM
+BUF_ARR     equ 0EA00h          ; 512: o /SYS/ARRANQUE.CFG
 PILHA       equ 0F000h
 SECT        equ 0F000h          ; 512: sector lido (MBR, BPB, directorios)
 FATS        equ 0F200h          ; 512: o ultimo sector da FAT
@@ -133,11 +134,52 @@ tenta:
     ld hl,txt_ok
     ld de,0401h
     call escreve
+    call le_arranque            ; A = a maquina por defeito (linha do menu do NAV; 0 = TIMEX 2048)
+    push af
     ld hl,copia_ini
     ld de,COPIA
     ld bc,copia_fim-copia_ini
     ldir
+    pop af
+    ld (COPIA+copia_auto-copia_ini+1),a
     jp COPIA
+
+; (2026-10-31) /SYS/ARRANQUE.CFG ("AR",0,linha; o NAV grava-o com a tecla D no menu das maquinas):
+; A = a linha (1-7), ou 0 se nao houver / nao prestar
+le_arranque:
+    call fs_monta               ; de volta a' raiz
+    ld hl,nome_sys
+    call procura
+    jr c,.nada
+    call entra_dir
+    ld hl,nome_arr
+    call procura
+    jr c,.nada
+    ld hl,4                     ; exactamente 4 bytes (vazio ou outro: nao se le', o le_ficheiro daria erro)
+    call tam_igual
+    jr nz,.nada
+    ld de,BUF_ARR
+    ld b,1
+    call le_ficheiro
+    ld hl,BUF_ARR
+    ld a,(hl)
+    cp 'A'
+    jr nz,.nada
+    inc hl
+    ld a,(hl)
+    cp 'R'
+    jr nz,.nada
+    inc hl
+    ld a,(hl)
+    or a
+    jr nz,.nada
+    inc hl
+    ld a,(hl)
+    cp 8                        ; 1-7: as maquinas do menu (8 e' o GS)
+    ret c
+.nada:
+    xor a
+    ret
 
 ; a rotina final corre na RAM (em E000h): escreve as duas memorias e pede o fim
 copia_ini:
@@ -158,8 +200,37 @@ copia_ini:
     ld de,0
     ld bc,2000h
     ldir
-    ld bc,ZX_DAT
+    ; (2026-10-31) a maquina por defeito: marca na pagina 12 da DivMMC (3FF6h: "ARRQ", linha, linha xor FFh)
+    ; e o bit 6 do fim: sem o ESP, o core faz um NMI uns segundos depois e o NAV muda para ela
+copia_auto:
+    ld a,0                      ; (a linha, posta antes de saltar para aqui)
+    or a
+    jr z,.so_fim
+    ld e,a
+    ld a,80h+12
+    out (0E3h),a                ; a pagina 12 em 2000h-3FFFh (as escritas ja' nao vao para as ROMs: alvo 1, so' ate' 1FFFh)
+    ld hl,3FF6h
+    ld (hl),'A'
+    inc hl
+    ld (hl),'R'
+    inc hl
+    ld (hl),'R'
+    inc hl
+    ld (hl),'Q'
+    inc hl
+    ld (hl),e
+    inc hl
+    ld a,e
+    cpl
+    ld (hl),a
+    xor a
+    out (0E3h),a
+    ld a,0C0h                   ; fim + NMI automatico
+    jr .fim
+.so_fim:
     ld a,80h
+.fim:
+    ld bc,ZX_DAT
     out (c),a                   ; fim: a FPGA reinicia o Z80
     jr $
 copia_fim:
@@ -1071,6 +1142,7 @@ nome_sys:  db "SYS        "
 nome_roms: db "ROMS       "
 nome_rom:  db "TC2048  ROM"
 nome_esx:  db "ESXMMC  BIN"
+nome_arr:  db "ARRANQUECFG"
 
 txt_titulo:    db "TIMEXTENSO - ARRANQUE",0
 txt_a_ler:     db "A LER O CARTAO SD...        ",0

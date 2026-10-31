@@ -126,6 +126,7 @@ entity ponte_esp is
     -- cartao SD
     sd_meu  : out   std_logic;                       -- 1 = o ESP pede o cartao (o top da'-lho quando o Z80 o largar)
     sd_dado : in    std_logic := '1';                -- (63) 1 = os pinos do cartao ja' sao do ESP (registo 50 bit 3)
+    esp_vivo : out  std_logic;                       -- (64) 1 = o ESP marcou-se presente (registo 73)
     sd_cs_n, sd_sclk, sd_mosi : out std_logic;
     sd_miso : in    std_logic := '1';
     -- teclas, reset e NMI
@@ -296,6 +297,7 @@ begin
   rx_n   <= rwp - rrp;
   -- leitura da RAM de video: so' com a fila de escrita vazia e lugar na fila de leitura
   p_rreq <= '1' when vr_n /= 0 and vazia = '1' and rx_n < 63 else '0';
+  esp_vivo <= vivo;
   sd_meu <= sd_ctl(0); sd_cs_n <= not sd_ctl(1); sd_sclk <= sclk_r; sd_mosi <= mosi_r;
   k_mat <= kmat_r; k_rst <= r65(0); k_nmi <= r65(1); k_cap <= r65(2); k_turbo <= r65(3); k_gspara <= r65(4); k_ay3 <= r65(6);
   -- o motor do cartao pega no byte da cabeca da fila (destino 10)

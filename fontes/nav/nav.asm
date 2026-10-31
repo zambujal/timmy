@@ -86,6 +86,7 @@ Inicio              di
                                         ; estiver noutro modo, passa ao ecra normal
                     IF !HIRES
                     call EspOrdem       ; v25: o ESP escolheu um ficheiro: corre-o ja', sem o navegador
+                    call AutoOrdem      ; v28: a maquina por defeito (marca do programa de arranque)
                     ELSE
                     call EspHerda       ; v25d: a ordem de maquina que o BROWSE.BIN recebeu do ESP
                     ENDIF
@@ -2768,7 +2769,11 @@ MNtk                push af
                     jp z,MNsai
                     cp 3
                     jp z,MNsai
-                    jr MNtecla
+                    cp 'd'              ; v28: D = esta maquina passa a ser a de arranque
+                    jp z,MNdef
+                    cp 'D'
+                    jp z,MNdef
+                    jp MNtecla
 MNdir               ld a,(EhTang)       ; v24d: para a coluna da direita (o GS, so' na Tang)
                     or a
                     jr z,MNtecla
@@ -2801,7 +2806,7 @@ MNbaixo             ld a,(MenuSel)
                     jr nc,MNtecla
                     jr MNmuda
 MNbTang             cp MNESQ
-                    jr nc,MNtecla
+                    jp nc,MNtecla
 ; so' a cor das duas linhas que mudam (sem redesenhar o menu todo)
 MNmuda              push af
                     ld a,(MenuSel)
@@ -4173,6 +4178,55 @@ VHlen               equ $-VHcod
 TxtNavHR            db "/BIN/NAVHR.BIN",0
                     ENDIF
 
+; v28: a marca do programa de arranque na pagina 12 (3FF6h-3FFBh: "ARRQ", linha, linha xor FFh):
+; a maquina por defeito. Como uma ordem do ESP para essa linha do menu (EspTipo = 20h + linha). Apaga-a.
+; Com o ESP ligado (EE3Bh = 1000 00xx) so' a apaga: com ele o arranque fica como estava.
+                    IF !HIRES
+AutoOrdem           ld a,(EspTipo)
+                    or a
+                    ret nz
+                    di
+                    ld a,80h+12
+                    out (0E3h),a
+                    ld hl,3FF6h
+                    ld de,TxtMarca
+                    ld b,4
+AOc                 ld a,(de)
+                    cp (hl)
+                    jr nz,AOnao
+                    inc hl
+                    inc de
+                    djnz AOc
+                    ld c,(hl)           ; 3FFAh: a linha
+                    inc hl
+                    ld a,c
+                    cpl
+                    cp (hl)             ; 3FFBh: a linha ao contrario
+                    jr nz,AOnao
+                    xor a
+                    ld (3FF6h),a        ; usa-se uma vez
+                    out (0E3h),a
+                    ld a,c
+                    or a
+                    ret z
+                    cp MNESQ
+                    ret nc
+                    ld e,c
+                    ld bc,0EE3Bh
+                    in a,(c)
+                    and 0FCh
+                    cp 80h
+                    ret z               ; ESP ligado: nada
+                    ld a,e
+                    add a,20h
+                    ld (EspTipo),a
+                    jp EOfim
+AOnao               xor a
+                    out (0E3h),a
+                    ret
+TxtMarca            db "ARRQ"
+                    ENDIF
+
 ; v25 (2026-10-22): ordem do ESP32 (caixa de correio do Timextenso, portos EE3Bh / EF3Bh).
 ; O ESP mostra o cartao e as capas; quando se escolhe um ficheiro, guarda a ordem e faz um NMI.
 ; Aqui pergunta-se (comando 10h) se ha' ordem: [tipo][caminho 8.3 com 0 no fim]. Havendo,
@@ -4524,6 +4578,38 @@ NPastas             equ PLab+72
 ; ---------------------------------------------------------------------------
 ; 2.a parte: A3E0h-BBE1h (no ficheiro; o trampolim guarda-a na pagina PAG2)
                     ds CODE2-$
+
+; v28: D no menu: /SYS/ARRANQUE.CFG = "AR",0,linha (0 = TIMEX 2048). O programa de arranque le'-o e, sem o
+; ESP, o core faz um NMI uns segundos depois de ligar: o NAV muda para essa maquina como o ENTER (AutoOrdem)
+MNdef               ld a,(MenuSel)
+                    cp MNESQ            ; o GS nao e' maquina
+                    jp nc,MNtecla
+                    ld (ArrBuf+3),a
+                    ld a,'*'
+                    ld b,FA_WRITE+FA_CREATE_AL
+                    ld hl,TxtArr
+                    rst 08h
+                    db F_OPEN
+                    jr c,MNdErro
+                    ld (Handle),a
+                    ld hl,ArrBuf
+                    ld bc,4
+                    rst 08h
+                    db F_WRITE
+                    push af
+                    ld a,(Handle)
+                    rst 08h
+                    db F_CLOSE
+                    pop af
+                    ld hl,TxtArrOk
+                    jr nc,MNdMsg
+MNdErro             ld hl,TxtArrErro
+MNdMsg              ld d,23
+                    ld e,0
+                    ld b,32
+                    call Escreve
+                    jp MNtecla
+
 
                     IF !HIRES
 ; v21: ao entrar, o ecra que estava (o do jogo) desfaz-se aos quadrados de 8x8 ate' ficar
@@ -5377,7 +5463,11 @@ TxtReinicia         db "Mudar a maquina? ENTER sim",0
 TxtReinicia         db "Reiniciar? ENTER sim",0
                     ENDIF
 TxtMenuTit          db "  ESCOLHER A MAQUINA",0
-TxtMenuAj           db "7/6 escolhe ENTER muda SPC volta",0
+TxtMenuAj           db "ENTER muda D=arranque SPC volta",0
+TxtArr              db "/SYS/ARRANQUE.CFG",0
+TxtArrOk            db "fica a maquina de arranque",0
+TxtArrErro          db "erro a gravar ARRANQUE.CFG",0
+ArrBuf              db "AR",0,0
 TabMenu             db "TIMEX 2048",0,0
                     db "ZX 48K",0,0
                     db "ZX 128K",0,0

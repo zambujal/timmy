@@ -171,6 +171,10 @@ por isso é provável que precise de adaptações.
     TC2048), 8 RESET, 10 `.gs`, 15 turbo. Para voltar ao NMI normal, carrega até os LEDs apagarem.
     Carregado 3 s troca de core (multiboot, se houver outro em `0x100000`).
 - Pelo teclado, sem a placa ESP32, não há tecla de NMI: é o botão.
+- **Máquina de arranque** (sem a placa ESP32): no menu das máquinas, **D** numa máquina grava-a em
+  `/SYS/ARRANQUE.CFG`. A Tang liga sempre no TC2048 e, uns 6 s depois, muda sozinha para essa máquina (o core dá
+  um NMI e o navegador faz como o ENTER no menu). D no TIMEX 2048 volta ao normal. Com a placa ESP32 ligada não
+  faz nada (fica como sempre).
 - **Pentagon 128 ou 1024?** Para as demos e jogos de Pentagon *128* usa o **Pentagon 128**: no esxDOS escreve
   `.go128 -penta` (ou escolhe-o no menu das máquinas). No **Pentagon 1024** (`.go1024`) os bits 5, 6 e 7 do
   porto 7FFD passam a escolher bancos — uma demo de 128 que os escreva (muitas fazem) salta para outra zona da

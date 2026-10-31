@@ -60,6 +60,8 @@ entity core_timextenso is
     rato_b   : in  std_logic_vector(2 downto 0) := (others => '0');
     joy      : in  std_logic_vector(7 downto 0) := (others => '0');   -- joystick USB (Kempston, 1F)
     pede_rnmi : out std_logic;                     -- impulso: ZXUNO A2h = 52h (o NAV pede RESET+NMI)
+    arr_auto  : out std_logic;                     -- (64) 20 ms a 1, 6 s depois do fim da carga com o A4h bit 6:
+                                                   --   o NMI da maquina por defeito (o top so' o da' sem o ESP)
     halt_n   : out std_logic;
     pronta   : out std_logic;
     sd_teste : out std_logic;
@@ -225,6 +227,8 @@ architecture rtl of core_timextenso is
   signal zx_reg : std_logic_vector(7 downto 0) := (others => '0');
   -- (esp61) carga das ROMs do cartao ao ligar
   signal carga : std_logic := '1';                              -- 1 = modo de carga (ate' ao "fim")
+  signal auto_on : std_logic := '0';                            -- (64) o programa de arranque pediu o NMI automatico
+  signal auto_t  : unsigned(28 downto 0) := (others => '0');
   signal carga_alvo : std_logic := '0';                         -- 0 = ram_home, 1 = ram_esx
   signal carga_rst : unsigned(16 downto 0) := (others => '0');  -- reset do Z80 e da DivTIESUS no fim
   signal rst_n_i : std_logic;                                   -- reset_n da placa e o do fim da carga
@@ -416,13 +420,17 @@ begin
         if a = x"FD3B" and zx_reg = x"A0" and io_wr_d = '0' then gs_rst <= do_cpu(0); end if;
         if a = x"FD3B" and zx_reg = x"A4" and carga = '1' then      -- (esp61) programa de arranque
           carga_alvo <= do_cpu(0);
-          if do_cpu(7) = '1' then carga <= '0'; carga_rst <= (others => '1'); end if;
+          if do_cpu(7) = '1' then carga <= '0'; carga_rst <= (others => '1'); auto_on <= do_cpu(6); auto_t <= (others => '0'); end if;
         end if;
         -- (2026-10-20: o A2h = 52h ja' nao faz o RESET+NMI: a DivTIESUS faz o master reset dos
         --  registos, como no clone, e o navegador arranca o TC2048 com jp 0)
       end if;
       if gs_parar = '1' then gs_rst <= '1'; end if;   -- o ESP para o General Sound (fora do OUT do Z80)
       if carga_rst(16) = '1' then carga_rst <= carga_rst - 1; end if;   -- (esp61) ~1,2 ms de reset no fim da carga
+      -- (64) NMI automatico: 6 s depois do fim da carga (o TC2048 e o esxDOS ja' arrancaram), 20 ms
+      if auto_on = '1' then
+        if auto_t = 325080000 then auto_on <= '0'; else auto_t <= auto_t + 1; end if;
+      end if;
       if rst_n_i = '0' then brd <= "111"; regff <= (others => '0'); dd1024 <= '0'; eff7b2 <= '0'; eff7b0 <= '0'; end if;   -- F4 e F3 sem reset
     end if;
   end process;
@@ -561,6 +569,7 @@ begin
   -- (esp59) o grupo k le' as colunas 2k (lt = 8k-1) e 2k+1 (lt = 8k+3); de 8k+4 a 8k+7 a FF da' o atributo da 2k+1
   fl_byte <= fl_at when cap_zx_l = '1' and cap_on = '1' and lt < 128 and (lt mod 8) >= 4 else x"FF";
   pede_rnmi <= rnmi_p;
+  arr_auto <= '1' when auto_on = '1' and auto_t >= 324000000 else '0';
   cap: ram_dp generic map (AW => 14)
     port map (clk => clk, a => cw_a, we => cw_we, d => cw_d, q => open,
               clkb => vclk, b => vid_a(13 downto 0), bq => vid_q);
