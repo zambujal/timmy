@@ -175,6 +175,11 @@ por isso é provável que precise de adaptações.
   `/SYS/ARRANQUE.CFG`. A Tang liga sempre no TC2048 e, uns 2 s depois, muda sozinha para essa máquina (o core dá
   um NMI e o navegador faz como o ENTER no menu). D no TIMEX 2048 volta ao normal. Com a placa ESP32 ligada não
   faz nada (fica como sempre).
+- **Arranque rápido**: ao ligar, o Z80 vai a 14 MHz durante a carga das ROMs e nos 3 s seguintes (é aí que se
+  muda para a máquina de arranque); depois volta à velocidade normal.
+- **Velocidade do Z80** (com ou sem a placa ESP32): **F10** sobe (3,5 → 7 → 14 → 27 MHz), **F9** desce. Não fica
+  gravada: ao ligar é sempre 3,5 MHz. A 27 MHz, enquanto a DivMMC está mapeada (esxDOS, navegador, cargas do
+  cartão), o Z80 desce para 14 MHz.
 - **Pentagon 128 ou 1024?** Para as demos e jogos de Pentagon *128* usa o **Pentagon 128**: no esxDOS escreve
   `.go128 -penta` (ou escolhe-o no menu das máquinas). No **Pentagon 1024** (`.go1024`) os bits 5, 6 e 7 do
   porto 7FFD passam a escolher bancos — uma demo de 128 que os escreva (muitas fazem) salta para outra zona da

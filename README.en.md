@@ -175,6 +175,11 @@ serializers, so it will probably need adapting.
   `/SYS/ARRANQUE.CFG`. The Tang always powers up as a TC2048 and, about 2 s later, switches by itself to that
   machine (the core gives an NMI and the browser does what ENTER does in the menu). D on TIMEX 2048 goes back to
   normal. With the ESP32 board connected it does nothing (as always).
+- **Fast start-up**: at power-up the Z80 runs at 14 MHz while the ROMs load and for the next 3 s (that is when
+  it switches to the start-up machine); then it goes back to normal speed.
+- **Z80 speed** (with or without the ESP32 board): **F10** goes up (3.5 → 7 → 14 → 27 MHz), **F9** goes down.
+  It is not saved: at power-up it is always 3.5 MHz. At 27 MHz, while the DivMMC is mapped (esxDOS, browser,
+  card loading), the Z80 drops to 14 MHz.
 - **Pentagon 128 or 1024?** For Pentagon *128* demos and games use **Pentagon 128**: in esxDOS type
   `.go128 -penta` (or pick it in the machine menu). In **Pentagon 1024** (`.go1024`) bits 5, 6 and 7 of port
   7FFD select banks — a 128 demo that writes them (many do) jumps to another memory area halfway through:
