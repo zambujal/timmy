@@ -172,7 +172,7 @@ serializers, so it will probably need adapting.
     switches core (multiboot, if there is another one at `0x100000`).
 - From the keyboard, without the ESP32 board, there is no NMI key: it is the button.
 - **Start-up machine** (without the ESP32 board): in the machine menu, **D** on a machine saves it in
-  `/SYS/ARRANQUE.CFG`. The Tang always powers up as a TC2048 and, about 6 s later, switches by itself to that
+  `/SYS/ARRANQUE.CFG`. The Tang always powers up as a TC2048 and, about 2 s later, switches by itself to that
   machine (the core gives an NMI and the browser does what ENTER does in the menu). D on TIMEX 2048 goes back to
   normal. With the ESP32 board connected it does nothing (as always).
 - **Pentagon 128 or 1024?** For Pentagon *128* demos and games use **Pentagon 128**: in esxDOS type

@@ -138,7 +138,7 @@ architecture rtl of top is
   signal rato_b : std_logic_vector(2 downto 0);
   signal joy_k, joy_usb : std_logic_vector(7 downto 0);
   signal pede_rnmi : std_logic := '0';
-  signal arr_auto, esp_vivo : std_logic := '0';   -- (64) NMI da maquina por defeito; o ESP esta' presente
+  signal arr_auto, esp_vivo, arr_rap : std_logic := '0';   -- (65) arr_rap: arranque a 14 MHz   -- (64) NMI da maquina por defeito; o ESP esta' presente
   signal vq : std_logic_vector(7 downto 0);
   signal modo, hcor : std_logic_vector(2 downto 0);
   signal mat, mat_auto, mat_usb, mat_arr, mat_fis : std_logic_vector(39 downto 0);
@@ -330,7 +330,8 @@ begin
     if rising_edge(clk54) then
       -- (2026-10-24) a 27 MHz, com a DivMMC mapeada (esxDOS, NAV, cargas do cartao) vai a 14 MHz: o SPI e as
       -- traps da DivMMC foram feitos para 3,5 MHz; o programa, depois de arrancar, corre a 27
-      if k_turbo = '1' or (vel_r = 8 and dv_lento = '1') then NUM := N1 * 4; elsif vel_r = 8 then NUM := 0; else NUM := N1 * vel_r; end if;
+      -- (65) no arranque (carga das ROMs e 3 s depois) a 14 MHz, depois volta a' velocidade escolhida
+      if k_turbo = '1' or arr_rap = '1' or (vel_r = 8 and dv_lento = '1') then NUM := N1 * 4; elsif vel_r = 8 then NUM := 0; else NUM := N1 * vel_r; end if;
       if arr_turbo = '1' then
         if vel_r = 8 then vel_r <= 1; else vel_r <= vel_r * 2; end if;
       end if;
@@ -340,7 +341,7 @@ begin
       if atalho(20) = '1' and at_d(0) = '0' and vel_r /= 8 then vel_r <= vel_r * 2; end if;
       if atalho(19) = '1' and at_d(1) = '0' and vel_r /= 1 then vel_r <= vel_r / 2; end if;
       -- (2026-10-24) 8 x = 27 MHz: um ce de 2 em 2 ciclos certos (nunca dois seguidos: o .sdc da' 2 ciclos ao Z80)
-      if vel_r = 8 and k_turbo = '0' and dv_lento = '0' then ce <= not ce;
+      if vel_r = 8 and k_turbo = '0' and arr_rap = '0' and dv_lento = '0' then ce <= not ce;
       elsif acc + NUM >= DEN and ce = '0' then acc <= acc + NUM - DEN; ce <= '1';   -- nunca dois ce seguidos
       else acc <= acc + NUM; ce <= '0'; end if;
       if acc35 + N1 >= DEN then acc35 <= acc35 + N1 - DEN; ce35 <= '1';
@@ -407,7 +408,7 @@ begin
       port map (clk => clk54, clk_div => I_clk, vclk => pclk, ce => ce, ce35 => ce35, reset_n => cpu_rst_n,
                 nmi_n => nmi_core, mat => mat,
                 border => border_c, modo => modo_c, hcor => hcor_c, ecra7 => ecra7_c,
-                vid_a => ecra7_v & va, vid_q => vq, vid_a2 => va2, vid_q2 => vq2, m16c => m16c_c, turbo => turbo_c, sd_esp => sd_dado, ear_in => cs_ear, mp_on => '0', mp_rate => mp_rate, mp_idx => mp_idx, mp_l => open, mp_r => open, ce_t => ce_t, dv_lento => dv_lento, ay_vis => ay_vis, rato_x => rato_x, rato_y => rato_y, rato_b => rato_b, joy => joy_k, pede_rnmi => pede_rnmi, arr_auto => arr_auto, halt_n => halt_n,
+                vid_a => ecra7_v & va, vid_q => vq, vid_a2 => va2, vid_q2 => vq2, m16c => m16c_c, turbo => turbo_c, sd_esp => sd_dado, ear_in => cs_ear, mp_on => '0', mp_rate => mp_rate, mp_idx => mp_idx, mp_l => open, mp_r => open, ce_t => ce_t, dv_lento => dv_lento, ay_vis => ay_vis, rato_x => rato_x, rato_y => rato_y, rato_b => rato_b, joy => joy_k, pede_rnmi => pede_rnmi, arr_auto => arr_auto, arr_rapido => arr_rap, halt_n => halt_n,
                 pronta => sd_pronta, sd_teste => sd_teste, sd_teste2 => sd_teste2,
                 sd_clk => open, sd_cke => O_sdram_cke, sd_cs_n => O_sdram_cs_n,
                 sd_ras_n => O_sdram_ras_n, sd_cas_n => O_sdram_cas_n, sd_we_n => O_sdram_wen_n,
@@ -548,7 +549,7 @@ begin
   O_led_ofs <= not std_logic_vector(ofs_r) when CAP_TESTE else
                not (arr_esc(3 downto 1) or atalho(2 downto 0)) when TIMEXTENSO else "11" & not dbg_hid;   -- LEDs 4-6: Win+J, Win+S, Win+C
 
-  turbo_c <= '0' when vel_r = 1 and k_turbo = '0' else '1';
+  turbo_c <= '0' when vel_r = 1 and k_turbo = '0' and arr_rap = '0' else '1';
   vel_cod <= "0100" when k_turbo = '1' else std_logic_vector(to_unsigned(vel_r, 4));
 
   -- borda e modo passam para o relogio do ponto (2 registos; mudam raramente)
