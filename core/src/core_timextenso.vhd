@@ -45,6 +45,7 @@ entity core_timextenso is
     vid_q2   : out std_logic_vector(7 downto 0);
     m16c     : out std_logic;                     -- modo 16C do Pentagon (EFF7 bit 0)
     turbo    : in  std_logic := '0';               -- 1 = Z80 a 7/14/27 MHz: espera (WAIT) pela SDRAM
+    sd_esp   : in  std_logic := '0';               -- (63) 1 = o cartao e' do ESP: um IN/OUT a E7h/EBh espera (WAIT)
     ear_in   : in  std_logic := '0';               -- (2026-10-24) cassete do ESP: EAR (porta FE bit 6 e som)
     ce_t     : out std_logic;                      -- um T do Z80 sem espera (relogio da cassete)
     dv_lento : out std_logic;
@@ -287,7 +288,7 @@ architecture rtl of core_timextenso is
   -- o envelope e o ruido, por isso as barras batem com o que se ouve
   signal pico, pico_m : std_logic_vector(71 downto 0) := (others => '0');   -- 9 canais x 8 bits
   signal pico_t20 : integer range 0 to 1080000 := 0;
-  signal eb_io, eb_d : std_logic := '0';
+  signal eb_io, eb_d, e7_io : std_logic := '0';
   signal m_lido : std_logic := '0';
   -- cache do Z80 principal (v3, 21/10/2026): so' actua em turbo. 64 linhas de 4 bytes, mapeamento
   -- directo pelo endereco da SDRAM (indice 7-2, etiqueta 22-8), escrita directa.
@@ -663,6 +664,7 @@ begin
   ce_t <= ce and cpu_wait_n;
   dv_lento <= dv_romcs;
   eb_io <= '1' when iorq_n = '0' and m1_n = '1' and a(7 downto 0) = x"EB" else '0';
+  e7_io <= '1' when iorq_n = '0' and m1_n = '1' and a(7 downto 0) = x"E7" else '0';
   process(clk)
   begin
     if rising_edge(clk) then
@@ -671,7 +673,10 @@ begin
       elsif spi_t /= 0 then spi_t <= spi_t - 1; end if;
     end if;
   end process;
-  cpu_wait_n <= '0' when turbo = '1' and eb_io = '1' and spi_t /= 0 else
+  -- (63) com o cartao no ESP, o Z80 fica parado no IN/OUT ao cartao ate' o ESP o largar (antes lia lixo a meio
+  -- de um TRD e o esxDOS ficava sem cartao ate' ao reset); o resto do programa continua a correr
+  cpu_wait_n <= '0' when sd_esp = '1' and (eb_io = '1' or e7_io = '1') else
+                '0' when turbo = '1' and eb_io = '1' and spi_t /= 0 else
                 '0' when turbo = '1' and m_acc = '1' and
                          not ((wr_n = '0' and feito = '1') or (wr_n = '1' and (m_lido = '1' or z_ler = '1'))) else '1';
   -- o GS so' entra com o Z80 sem pedido e longe do refresh forcado (o Z80 nunca espera

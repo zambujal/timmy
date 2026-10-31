@@ -124,7 +124,8 @@ entity ponte_esp is
     p_rv    : in    std_logic := '0';
     p_rd    : in    std_logic_vector(7 downto 0) := (others => '0');
     -- cartao SD
-    sd_meu  : out   std_logic;                       -- 1 = os pinos do cartao sao do ESP
+    sd_meu  : out   std_logic;                       -- 1 = o ESP pede o cartao (o top da'-lho quando o Z80 o largar)
+    sd_dado : in    std_logic := '1';                -- (63) 1 = os pinos do cartao ja' sao do ESP (registo 50 bit 3)
     sd_cs_n, sd_sclk, sd_mosi : out std_logic;
     sd_miso : in    std_logic := '1';
     -- teclas, reset e NMI
@@ -475,7 +476,7 @@ begin
                 when x"4B" => v := "00000" & wx_r(10 downto 8);
                 when x"4C" => v := wy_r(7 downto 0);
                 when x"4D" => v := "000000" & wy_r(9 downto 8);
-                when x"50" => v := "00000" & sd_ctl;
+                when x"50" => v := "0000" & sd_dado & sd_ctl;   -- (63) bit 3 = o cartao e' do ESP
                 when x"55" =>
                   v := (others => '0');
                   if vr_n /= 0 then v(1) := '1'; end if;

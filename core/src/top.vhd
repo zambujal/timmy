@@ -244,6 +244,8 @@ architecture rtl of top is
   signal lb_a, lb_ra : std_logic_vector(8 downto 0) := (others => '0');
   signal lb_d, lb_q : std_logic_vector(31 downto 0) := (others => '0');
   -- (v3) cartao SD partilhado, leitura da RAM de video, teclas / reset / NMI do ESP
+  signal sd_dado : std_logic := '0';
+  signal sd_espera : integer range 0 to 27000000 := 0;
   signal esp_rreq, esp_rv, sd_meu, esp_cs_n, esp_sclk, esp_mosi, k_rst, k_nmi : std_logic := '0';
   signal esp_rd : std_logic_vector(7 downto 0);
   signal mb_wr, mb_rd, mb_sel : std_logic := '0';
@@ -404,7 +406,7 @@ begin
       port map (clk => clk54, clk_div => I_clk, vclk => pclk, ce => ce, ce35 => ce35, reset_n => cpu_rst_n,
                 nmi_n => nmi_core, mat => mat,
                 border => border_c, modo => modo_c, hcor => hcor_c, ecra7 => ecra7_c,
-                vid_a => ecra7_v & va, vid_q => vq, vid_a2 => va2, vid_q2 => vq2, m16c => m16c_c, turbo => turbo_c, ear_in => cs_ear, mp_on => '0', mp_rate => mp_rate, mp_idx => mp_idx, mp_l => open, mp_r => open, ce_t => ce_t, dv_lento => dv_lento, ay_vis => ay_vis, rato_x => rato_x, rato_y => rato_y, rato_b => rato_b, joy => joy_k, pede_rnmi => pede_rnmi, halt_n => halt_n,
+                vid_a => ecra7_v & va, vid_q => vq, vid_a2 => va2, vid_q2 => vq2, m16c => m16c_c, turbo => turbo_c, sd_esp => sd_dado, ear_in => cs_ear, mp_on => '0', mp_rate => mp_rate, mp_idx => mp_idx, mp_l => open, mp_r => open, ce_t => ce_t, dv_lento => dv_lento, ay_vis => ay_vis, rato_x => rato_x, rato_y => rato_y, rato_b => rato_b, joy => joy_k, pede_rnmi => pede_rnmi, halt_n => halt_n,
                 pronta => sd_pronta, sd_teste => sd_teste, sd_teste2 => sd_teste2,
                 sd_clk => open, sd_cke => O_sdram_cke, sd_cs_n => O_sdram_cs_n,
                 sd_ras_n => O_sdram_ras_n, sd_cas_n => O_sdram_cas_n, sd_we_n => O_sdram_wen_n,
@@ -420,10 +422,22 @@ begin
                 ovl_pede_l => ovl_pede_l, ovl_lin_l => ovl_lin_l, ovl_pede_w => ovl_pede_w, ovl_lin_w => ovl_lin_w, ovl_sel => c_selq, ovl_w16 => c_w16, ovl_wsep => c_wsepq, ovl_widx => c_widxq, lb_we => lb_we, lb_a => lb_a, lb_d => lb_d);
     fsinc <= '0';
     -- o cartao SD: do DivMMC do Z80 ou do ESP (registo 50 bit 0); com o ESP, o Z80 ve' o MISO a 1
-    O_sd_cs_n <= esp_cs_n when sd_meu = '1' else c_sd_cs_n;
-    O_sd_clk  <= esp_sclk when sd_meu = '1' else c_sd_clk;
-    O_sd_mosi <= esp_mosi when sd_meu = '1' else c_sd_mosi;
-    c_sd_miso <= '1' when sd_meu = '1' else I_sd_miso;
+    -- (63) o ESP pede o cartao (sd_meu) e so' o recebe (sd_dado) com o CS da DivMMC inactivo: nunca a meio
+    -- de um comando do esxDOS. Ao fim de ~0,5 s sem o CS largar (programa parado com o cartao seleccionado)
+    -- da'-se-lhe na mesma. Enquanto o tiver, o Z80 espera no IN/OUT seguinte ao cartao (sd_esp do core).
+    process(clk54)
+    begin
+      if rising_edge(clk54) then
+        if sd_meu = '0' then sd_dado <= '0'; sd_espera <= 0;
+        elsif sd_dado = '0' then
+          if c_sd_cs_n = '1' or sd_espera = 27000000 then sd_dado <= '1'; else sd_espera <= sd_espera + 1; end if;
+        end if;
+      end if;
+    end process;
+    O_sd_cs_n <= esp_cs_n when sd_dado = '1' else c_sd_cs_n;
+    O_sd_clk  <= esp_sclk when sd_dado = '1' else c_sd_clk;
+    O_sd_mosi <= esp_mosi when sd_dado = '1' else c_sd_mosi;
+    c_sd_miso <= '1' when sd_dado = '1' else I_sd_miso;
     arr: entity work.teclas_arranque port map (clk => clk54, pronta => sd_pronta, rst_n => cpu_rst_n,
         bot_a => rdeb, bot_b => ndeb, segura => arr_segura, escolha => arr_esc, led_pisca => arr_pisca, nmi_rst => arr_nmi, turbo_t => arr_turbo, rnmi_t => pede_rnmi, mat => mat_arr);
   end generate;
@@ -658,7 +672,7 @@ begin
                                        p_wreq => esp_wreq, p_wa => esp_wa, p_wd => esp_wd, p_wbe => esp_wbe, p_wack => esp_wack,
                                        c_lig => c_lig, c_sel => c_sel, c_jan => c_jan, c_2x => c_2x, c_meio => c_meio, c_w16 => c_w16, c_wsep => c_wsep, c_widx => c_widx, c_wmostra => c_widxq, mp_on => mp_on, mp_alto => mp_alto, mp_rate => mp_rate, mp_idx => mp_idx, c_wx => c_wx, c_wy => c_wy, c_ativa => c_selq, c_cor1 => c_cor1, c_cor2 => c_cor2, c_cor3 => c_cor3,
                                        p_rreq => esp_rreq, p_rv => esp_rv, p_rd => esp_rd,
-                                       sd_meu => sd_meu, sd_cs_n => esp_cs_n, sd_sclk => esp_sclk, sd_mosi => esp_mosi, sd_miso => I_sd_miso,
+                                       sd_meu => sd_meu, sd_dado => sd_dado, sd_cs_n => esp_cs_n, sd_sclk => esp_sclk, sd_mosi => esp_mosi, sd_miso => I_sd_miso,
                                        k_mat => k_mat, k_rst => k_rst, k_nmi => k_nmi,
                                        z_wr => mb_wr, z_rd => mb_rd, z_sel => mb_sel, z_d => mb_d, z_q => mb_q, u_wr => ua_wr, u_rd => ua_rd, u_dat => ua_dat, u_q => ua_q,
                                        k_in => mat_fis, k_cap => k_cap, k_turbo => k_turbo, k_gspara => k_gspara, k_ay3 => k_ay3, k_vel => vel_cod, cs_wr => cs_wr, cs_d => cs_d, cs_limpa => cs_limpa, cs_livres => cs_livres, cs_ativa => cs_ativa, k_joy => joy_usb, k_atal => atalho, k_ay => ay_vis, k_jcru => jcru, k_maq => maq_st);
